@@ -32,7 +32,7 @@ namespace Dsp.ConsoleDebug
 		{
 			Fft transformer = new Fft();
 			ICollection<Complex> transformed = transformer.DoTransform(f, N);
-			Console.WriteLine("Discrete Fourier Transform\n");
+			Console.WriteLine("Fast Fourier Transform\n");
 
 			Print(transformed);
 		}

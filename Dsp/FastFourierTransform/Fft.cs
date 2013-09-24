@@ -15,7 +15,7 @@ namespace Dsp.FastFourierTransform
 			Init(n);
 			IList<Complex> discrete = Discretize(func, n);
 			IList<Complex> indices = FftDif(discrete, n);
-            return ReArrange(indices, n);
+            return indices;
 		}
 
         private ICollection<Complex> ReArrange(IList<Complex> indices, Int32 n)
@@ -46,19 +46,25 @@ namespace Dsp.FastFourierTransform
 
 			Complex w = 1;
             Int32 n2 = n / 2;
-            IList<Complex> vectorC = new Complex[n2];
-			IList<Complex> vectorB = new Complex[n2];
+            IList<Complex> vectorOdd = new Complex[n2];
+			IList<Complex> vectorEven = new Complex[n2];
             
             for (Int32 j = 0; j < n2; ++j) {
-				vectorB[j] = vectorA[j] + vectorA[j + n2];
-				vectorC[j] = (vectorA[j] - vectorA[j + n2]) * w;
+				vectorEven[j] = vectorA[j] + vectorA[j + n2];
+				vectorOdd[j] = (vectorA[j] - vectorA[j + n2]) * w;
 
 				w *= Wn;
 			}
 
-			IList<Complex> processedB = FftDif(vectorB, n2);
-			IList<Complex> processedC = FftDif(vectorC, n2);
-			IList<Complex> result = processedB.Concat(processedC).ToList();
+			IList<Complex> processedEven = FftDif(vectorEven, n2);
+			IList<Complex> processedOdd = FftDif(vectorOdd, n2);
+
+            IList<Complex> result = new Complex[n];
+            for (Int32 i = 0; i < n2; ++i) {
+                Int32 i2 = 2 * i;
+                result[i2] = processedEven[i];
+                result[i2 + 1] = processedOdd[i];
+            }
 			return result;
 		}
 
