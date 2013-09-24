@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Linq;
 
 namespace Dsp.DiscreteFourierTransform
 {
 	public class Dft
 	{
-		
+        public ICollection<Double> Magnitudes { get; private set; }
+
+        public ICollection<Double> Phases { get; private set; }
+
+
 		public ICollection<Complex> DoTransform( Func<Double, Double> func, Int32 n)
 		{
 			ICollection<Complex> result = new List<Complex>();
@@ -14,9 +19,15 @@ namespace Dsp.DiscreteFourierTransform
 				Complex point = CalculatePoint(func, k, n);
 				result.Add(point);
 			}
-
-			return result;
+			SetResults(result);
+            return result;
 		}
+
+        private void SetResults(ICollection<Complex> result)
+        {
+            Magnitudes = result.Select(x => x.Magnitude).ToList();
+            Phases = result.Select(x => x.Phase).ToList();
+        }
 
 
 		private Complex CalculatePoint(Func<Double, Double> func, Int32 k, Int32 n)
