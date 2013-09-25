@@ -17,6 +17,7 @@ using Dsp;
 using Dsp.DiscreteFourierTransform;
 using OxyPlot.Series;
 using OxyPlot.Axes;
+using Dsp.FastFourierTransform;
 
 namespace Dsp.GraphUi
 {
@@ -35,23 +36,33 @@ namespace Dsp.GraphUi
         private void SetUpPlot()
         {
             PlotModel model = new PlotModel("Fourier Transform");
-            Dft discreteTransform = new Dft();
+            IFourierTransform discreteTransform = new Dft();
+            IFourierTransform fastTransform = new Fft();
             
             Func<Double, Double> f = x => Math.Sin(x) + Math.Cos(4 * x);
-		    Int32 N = 16;
+            Func<Double, Double> anotherF = x => Math.Cos(3 * x) + Math.Sin(2 * x);
+            Int32 N = 16;
+            Int32 anotherN = 2048;
 		
-            discreteTransform.DoTransform(f, N);
+            discreteTransform.DoTransform(anotherF, anotherN);
+            fastTransform.DoTransform(anotherF, anotherN);
 
-            LineSeries ls = new LineSeries("sin(x)+sin(3x)/3+sin(5x)/5+...");
+            model.Series.Add(CreateSeries("DFT Magnitude", discreteTransform.Magnitudes));
+            model.Series.Add(CreateSeries("FFT Magnitude", fastTransform.Magnitudes));
+            model.Series.Add(CreateSeries("DFT Phase", discreteTransform.Phases));
+            model.Series.Add(CreateSeries("FFT Phase", fastTransform.Phases));
 
-            IList<IDataPoint> points = discreteTransform.Magnitudes.Select((x, i) => ((IDataPoint)new DataPoint(i, x))).ToList();
-            //ls.Points.Add(new DataPoint(x, y))
-            ls.Points = points;
-            
-            model.Series.Add(ls);
-            model.Axes.Add(new LinearAxis(AxisPosition.Left, -4, 4));
+            model.Axes.Add(new LinearAxis(AxisPosition.Left, 0, N));
             model.Axes.Add(new LinearAxis(AxisPosition.Bottom));
-            MyPlotModel.Model = model;         // this is raising the INotifyPropertyChanged event
+            MyPlotModel.Model = model;
+        }
+
+        private LineSeries CreateSeries(String name, ICollection<Double> data)
+        {
+            LineSeries ls = new LineSeries(name);
+            IList<IDataPoint> points = data.Select((x, i) => ((IDataPoint)new DataPoint(i, x))).ToList();
+            ls.Points = points;
+            return ls;
         }
 
     }

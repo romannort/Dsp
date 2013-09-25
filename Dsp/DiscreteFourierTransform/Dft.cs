@@ -5,12 +5,11 @@ using System.Linq;
 
 namespace Dsp.DiscreteFourierTransform
 {
-	public class Dft
+	public class Dft: IFourierTransform
 	{
-        public ICollection<Double> Magnitudes { get; private set; }
+        public ICollection<Double> Magnitudes { get; set; }
 
-        public ICollection<Double> Phases { get; private set; }
-
+        public ICollection<Double> Phases { get; set; }
 
 		public ICollection<Complex> DoTransform( Func<Double, Double> func, Int32 n)
 		{
@@ -42,7 +41,7 @@ namespace Dsp.DiscreteFourierTransform
 
 		private Complex Multiplier(Int32 m, Int32 k, Int32 n, Boolean isInverse = false)
 		{
-			Int32 inverse = isInverse ? -1 : 1;
+			Int32 inverse = isInverse ? 1 : -1;
 			Complex result = Complex.Pow(Math.E, inverse * Complex.ImaginaryOne * 2 * Math.PI * m * k / n);
 			return result;
 		}

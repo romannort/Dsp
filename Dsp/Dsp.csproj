@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="DiscreteFourierTransform\Dft.cs" />
     <Compile Include="FastFourierTransform\Fft.cs" />
+    <Compile Include="IFourierTransform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
