@@ -5,13 +5,9 @@ using System.Linq;
 
 namespace Dsp.DiscreteFourierTransform
 {
-	public class Dft: IFourierTransform
+	public class Dft: FourierTransform
 	{
-        public ICollection<Double> Magnitudes { get; set; }
-
-        public ICollection<Double> Phases { get; set; }
-
-		public ICollection<Complex> DoTransform( Func<Double, Double> func, Int32 n)
+        public override ICollection<Complex> DoTransform( Func<Double, Double> func, Int32 n)
 		{
 			ICollection<Complex> result = new List<Complex>();
 			for (Int32 k = 0; k < n; ++k) {

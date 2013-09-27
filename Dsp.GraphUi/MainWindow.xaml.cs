@@ -36,8 +36,8 @@ namespace Dsp.GraphUi
         private void SetUpPlot()
         {
             PlotModel model = new PlotModel("Fourier Transform");
-            IFourierTransform discreteTransform = new Dft();
-            IFourierTransform fastTransform = new Fft();
+            FourierTransform discreteTransform = new Dft();
+            FourierTransform fastTransform = new Fft();
             
             Func<Double, Double> f = x => Math.Sin(x) + Math.Cos(4 * x);
             Func<Double, Double> anotherF = x => Math.Cos(3 * x) + Math.Sin(2 * x);
