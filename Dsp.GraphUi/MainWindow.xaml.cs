@@ -40,12 +40,10 @@ namespace Dsp.GraphUi
             FourierTransform fastTransform = new Fft();
             
             Func<Double, Double> f = x => Math.Sin(x) + Math.Cos(4 * x);
-            Func<Double, Double> anotherF = x => Math.Cos(3 * x) + Math.Sin(2 * x);
             Int32 N = 16;
-            Int32 anotherN = 2048;
-		
-            discreteTransform.DoTransform(anotherF, anotherN);
-            fastTransform.DoTransform(anotherF, anotherN);
+            
+            discreteTransform.DoTransform(f, N);
+            fastTransform.DoTransform(f, N);
 
             model.Series.Add(CreateSeries("DFT Magnitude", discreteTransform.Magnitudes));
             model.Series.Add(CreateSeries("FFT Magnitude", fastTransform.Magnitudes));

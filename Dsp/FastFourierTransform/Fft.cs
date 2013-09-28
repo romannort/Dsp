@@ -16,21 +16,30 @@ namespace Dsp.FastFourierTransform
 		/// <param name="func"></param>
 		/// <param name="n"></param>
 		/// <returns></returns>
-        public override ICollection<Complex> DoTransform(Func<Double, Double> func, Int32 n )
+        public override ICollection<Complex> DoTransform(Func<Double, Double> func, Int32 n)
 		{
-			IList<Complex> discrete = Discretize(func, n);
-			IList<Complex> indices = FftDif(discrete, n);
-            SetResults(indices);
-            return indices;
+            Discretizer discretizer = new Discretizer();
+			IList<Double> discrete = (IList<Double>)discretizer.Discretize(func, n, 1.0);
+            return DoTransform(discrete);
 		}
 
-        private void SetResults(ICollection<Complex> result)
+        public override ICollection<Complex> DoTransform(ICollection<Double> data)
         {
-            Magnitudes = result.Select(x => x.Magnitude).ToList();
-            Phases = result.Select(x => x.Phase).ToList();
+            IList<Complex> indices = FftDif((IList<Complex>)data, data.Count);
+            SetResults(indices);
+            return indices;
         }
 
-		/// <summary>Recursive FFT with decimation in frequency. </summary>
+        public override ICollection<Double> DoTransformReverse(ICollection<Complex> data)
+        {
+            reverse = true;
+            IList<Complex> indices = FftDif((IList<Complex>)data, data.Count);
+            SetResults(indices);
+            // Assume all numbers are real
+            return Magnitudes;
+        }
+
+        /// <summary>Recursive FFT with decimation in frequency. </summary>
 		/// <param name="vectorA"></param>
 		/// <param name="n"></param>
 		/// <returns></returns>
@@ -64,6 +73,7 @@ namespace Dsp.FastFourierTransform
 
         private Complex Multiplier(Int32 m, Int32 n)
         {
+            Int32 reverseCoeff = reverse ? 1 : -1;
             return Complex.Pow(Math.E, -1 * 2 * Math.PI * Complex.ImaginaryOne * m / n);
         }
 

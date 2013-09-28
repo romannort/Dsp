@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DiscreteFourierTransform\Dft.cs" />
+    <Compile Include="Discretizer.cs" />
     <Compile Include="FastFourierTransform\Fft.cs" />
     <Compile Include="FourierTransform.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -3,8 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:oxy="http://oxyplot.codeplex.com"
         
-        Title="MainWindow" Height="350" Width="525">
+        Title="Fourier Trasnform" Height="350" Width="525" MinHeight="350" MinWidth="525">
     <Grid>
-        <oxy:Plot Name="MyPlotModel"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Button Name="btnFunc" Width="100" Content="F(x)"/>
+            <Button Name="btnFft" Width="100" Content="FFT" />
+            <Button Name="btnDft" Width="100" Content="DFT" />
+            <Button Name="btnReverseTransform" Width="100" Content="Reverse"/>
+            <Button Name="btnStats" Width="100" Content="Stats" Margin="25,0,0,0" />
+        </StackPanel>
+        <oxy:Plot Name="MyPlotModel" Grid.Row="1" Grid.Column="0"/>
     </Grid>
 </Window>
