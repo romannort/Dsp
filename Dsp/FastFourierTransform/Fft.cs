@@ -25,25 +25,41 @@ namespace Dsp.FastFourierTransform
 
         public override ICollection<Complex> DoTransform(ICollection<Double> data)
         {
-            IList<Complex> indices = FftDif((IList<Complex>)data, data.Count);
-            SetResults(indices);
+            ICollection<Complex> indices = TransformInner(ToComplex(data));
             return indices;
         }
 
         public override ICollection<Double> DoTransformReverse(ICollection<Complex> data)
         {
-            reverse = true;
-            IList<Complex> indices = FftDif((IList<Complex>)data, data.Count);
-            SetResults(indices);
+            inverse = true;
+            ICollection<Complex> indices = TransformInner(data);
             // Assume all numbers are real
             return Magnitudes;
         }
 
-        /// <summary>Recursive FFT with decimation in frequency. </summary>
+        private ICollection<Complex> TransformInner(ICollection<Complex> data)
+        {
+            IList<Complex> indices = FftDifRecursive((IList<Complex>)data, data.Count);
+            SetResults(indices);
+            ICollection<Complex> result;
+            if (inverse)
+            {
+                result = indices.Select(x => x / data.Count).ToList();
+                SetResults(result);
+                return result;
+            }
+            else
+            {
+                SetResults(indices);
+                return indices;
+            }
+        }
+
+        /// <summary>Recursive FFT (decimation in frequency) </summary>
 		/// <param name="vectorA"></param>
 		/// <param name="n"></param>
 		/// <returns></returns>
-		private IList<Complex> FftDif(IList<Complex> vectorA, Int32 n)
+		private IList<Complex> FftDifRecursive(IList<Complex> vectorA, Int32 n)
 		{
 			if (vectorA.Count == 1) {
 				return vectorA;
@@ -59,8 +75,8 @@ namespace Dsp.FastFourierTransform
 				vectorOdd[j] = (vectorA[j] - vectorA[j + n2]) * Multiplier(j, n);
 			}
 
-			IList<Complex> processedEven = FftDif(vectorEven, n2);
-			IList<Complex> processedOdd = FftDif(vectorOdd, n2);
+			IList<Complex> processedEven = FftDifRecursive(vectorEven, n2);
+			IList<Complex> processedOdd = FftDifRecursive(vectorOdd, n2);
 
             IList<Complex> result = new Complex[n];
             for (Int32 i = 0; i < n2; ++i) {
@@ -73,7 +89,7 @@ namespace Dsp.FastFourierTransform
 
         private Complex Multiplier(Int32 m, Int32 n)
         {
-            Int32 reverseCoeff = reverse ? 1 : -1;
+            Int32 reverseCoeff = inverse ? 1 : -1;
             return Complex.Pow(Math.E, -1 * 2 * Math.PI * Complex.ImaginaryOne * m / n);
         }
 

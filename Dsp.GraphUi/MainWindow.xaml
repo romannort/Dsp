@@ -12,7 +12,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
             <Button Name="btnFunc" Width="100" Content="F(x)"/>
             <Button Name="btnFft" Width="100" Content="FFT" />
             <Button Name="btnDft" Width="100" Content="DFT" />

@@ -15,7 +15,7 @@ namespace Dsp
         /// <summary>
         /// 
         /// </summary>
-        protected Boolean reverse = false;
+        protected Boolean inverse = false;
 
         /// <summary>
         /// Gets magnitudes collection
@@ -34,6 +34,17 @@ namespace Dsp
         {
             Magnitudes = result.Select(x => x.Magnitude).ToList();
             Phases = result.Select(x => x.Phase).ToList();
+        }
+
+        protected ICollection<Complex> ToComplex(ICollection<Double> data)
+        {
+            return data.Select(x => new Complex(x, 0)).ToList();
+        }
+
+        protected ICollection<Double> ToDouble(ICollection<Complex> data)
+        {
+            // Assume the data has only Real part
+            return data.Select(x => x.Magnitude).ToList();
         }
     }
 }

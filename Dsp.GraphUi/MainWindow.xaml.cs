@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Numerics;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -42,13 +43,20 @@ namespace Dsp.GraphUi
             Func<Double, Double> f = x => Math.Sin(x) + Math.Cos(4 * x);
             Int32 N = 16;
             
-            discreteTransform.DoTransform(f, N);
-            fastTransform.DoTransform(f, N);
+            ICollection<Complex> discreteData = discreteTransform.DoTransform(f, N);
+            ICollection<Complex> fastData = fastTransform.DoTransform(f, N);
 
-            model.Series.Add(CreateSeries("DFT Magnitude", discreteTransform.Magnitudes));
-            model.Series.Add(CreateSeries("FFT Magnitude", fastTransform.Magnitudes));
-            model.Series.Add(CreateSeries("DFT Phase", discreteTransform.Phases));
-            model.Series.Add(CreateSeries("FFT Phase", fastTransform.Phases));
+            //model.Series.Add(CreateSeries("DFT Magnitude", discreteTransform.Magnitudes));
+            //model.Series.Add(CreateSeries("FFT Magnitude", fastTransform.Magnitudes));
+            //model.Series.Add(CreateSeries("DFT Phase", discreteTransform.Phases));
+            //model.Series.Add(CreateSeries("FFT Phase", fastTransform.Phases));
+
+            discreteTransform.DoTransformReverse(discreteData);
+            fastTransform.DoTransformReverse(fastData);
+            Discretizer discretizer = new Discretizer();
+            model.Series.Add(CreateSeries("Original F(x)", discretizer.Discretize(f, N, 1.0)));
+            model.Series.Add(CreateSeries("Inverse FFT", fastTransform.Magnitudes));
+            model.Series.Add(CreateSeries("Inverse DFT", discreteTransform.Magnitudes));
 
             model.Axes.Add(new LinearAxis(AxisPosition.Left, 0, N));
             model.Axes.Add(new LinearAxis(AxisPosition.Bottom));

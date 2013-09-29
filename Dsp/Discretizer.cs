@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dsp
 {
-    internal class Discretizer
+    public class Discretizer
     {
-        internal ICollection<Double> Discretize(Func<Double, Double> f, Int32 dotsNumber, Double step)
+        public ICollection<Double> Discretize(Func<Double, Double> f, Int32 dotsNumber, Double step)
         {
             ICollection<Double> result = new List<Double>();
 

@@ -17,13 +17,13 @@ namespace Dsp.DiscreteFourierTransform
 
         public override ICollection<Complex> DoTransform(ICollection<double> data)
         {
-            ICollection<Complex> result = TransfromInner((ICollection<Complex>)data);
+            ICollection<Complex> result = TransfromInner(ToComplex(data));
             return result;
         }
 
         public override ICollection<double> DoTransformReverse(ICollection<Complex> data)
         {
-            reverse = true;
+            inverse = true;
             ICollection<Complex> result = TransfromInner(data);
             // Assume all results are Real so Magnitue equal to real value and Phase == 0
             return Magnitudes;
@@ -35,26 +35,27 @@ namespace Dsp.DiscreteFourierTransform
             Int32 n = data.Count;
             for (Int32 k = 0; k < n; ++k)
             {
-                Complex point = CalculatePoint(data.ElementAt(k), k, n);
+                Complex point = CalculatePoint(data, k, n);
                 result.Add(point);
             }
             SetResults(result);
             return result;
         }
 
-		private Complex CalculatePoint(Complex fValue, Int32 k, Int32 n)
+		private Complex CalculatePoint(ICollection<Complex> sourceData, Int32 k, Int32 n)
 		{
 			Complex result = new Complex();
 			for (int m = 0; m < n; ++m) {
-				Complex subSum = fValue * Multiplier(m, k, n);
+				Complex subSum = sourceData.ElementAt(m) * Multiplier(m, k, n);
 				result += subSum;
 			}
-			return result;
+            Double inverseCoef = n;
+            return !inverse ? result : result / inverseCoef; 
 		}
 
 		private Complex Multiplier(Int32 m, Int32 k, Int32 n)
 		{
-            Int32 reverseCoeff = reverse ? 1 : -1;
+            Int32 reverseCoeff = inverse ? 1 : -1;
 			Complex result = Complex.Pow(Math.E, reverseCoeff * Complex.ImaginaryOne * 2 * Math.PI * m * k / n);
 			return result;
 		}
