@@ -54,7 +54,7 @@ namespace Dsp.GraphUi
             discreteTransform.DoTransformReverse(discreteData);
             fastTransform.DoTransformReverse(fastData);
             Discretizer discretizer = new Discretizer();
-            model.Series.Add(CreateSeries("Original F(x)", discretizer.Discretize(f, N, 1.0)));
+            model.Series.Add(CreateSeries("Original F(x)", discretizer.Discretize(f, 0, N, 0.01)));
             model.Series.Add(CreateSeries("Inverse FFT", fastTransform.Magnitudes));
             model.Series.Add(CreateSeries("Inverse DFT", discreteTransform.Magnitudes));
 
@@ -71,5 +71,13 @@ namespace Dsp.GraphUi
             return ls;
         }
 
+
+        private LineSeries CreateSeries(String name, IDictionary<Double, Double> data)
+        {
+            LineSeries ls = new LineSeries(name);
+            IList<IDataPoint> points = data.Select(x => ((IDataPoint)new DataPoint(x.Key, x.Value))).ToList();
+            ls.Points = points;
+            return ls;
+        }
     }
 }

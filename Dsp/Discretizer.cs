@@ -19,5 +19,18 @@ namespace Dsp
             }
             return result;
         }
+
+        public IDictionary<Double, Double> Discretize(Func<Double, Double> f, Double startValue, Double endValue, Double step)
+        {
+            IDictionary<Double, Double> result = new Dictionary<Double, Double>();
+            Double currentPoint = startValue;
+            while(currentPoint < endValue)
+            {
+                Double value = f(currentPoint);
+                result.Add(currentPoint, value);
+                currentPoint += step;
+            }
+            return result;
+        }
     }
 }
