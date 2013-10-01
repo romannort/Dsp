@@ -42,7 +42,7 @@ namespace Dsp.FastFourierTransform
             IList<Complex> indices = FftDifRecursive((IList<Complex>)data, data.Count);
             SetResults(indices);
             ICollection<Complex> result;
-            if (inverse)
+            if (!inverse)
             {
                 result = indices.Select(x => x / data.Count).ToList();
                 SetResults(result);
@@ -93,14 +93,5 @@ namespace Dsp.FastFourierTransform
             return Complex.Pow(Math.E, -1 * 2 * Math.PI * Complex.ImaginaryOne * m / n);
         }
 
-		/// <summary>Discretizes function with into <paramref name="n"/> points.</summary>
-		/// <param name="func"></param>
-		/// <param name="n"></param>
-		/// <returns></returns>
-		private IList<Complex> Discretize(Func<Double, Double> func, Int32 n)
-		{
-			IList<Complex> result = Enumerable.Range(0, n).Select(x => new Complex(func(x), 0)).ToList();
-			return result;
-		} 
 	}
 }

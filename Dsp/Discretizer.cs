@@ -32,5 +32,11 @@ namespace Dsp
             }
             return result;
         }
+
+        public ICollection<Double> Discretize(Func<Double,Double> f, ICollection<Double> keys)
+        {
+            ICollection<Double> result = keys.Select(f).ToList();
+            return result;
+        }
     }
 }

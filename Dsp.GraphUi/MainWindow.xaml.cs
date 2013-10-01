@@ -42,42 +42,31 @@ namespace Dsp.GraphUi
             
             Func<Double, Double> f = x => Math.Sin(x) + Math.Cos(4 * x);
             Int32 N = 16;
+            Discretizer discretizer = new Discretizer();
+            LineSeriesBuilder seriesBuilder = new LineSeriesBuilder();
             
-            ICollection<Complex> discreteData = discreteTransform.DoTransform(f, N);
-            ICollection<Complex> fastData = fastTransform.DoTransform(f, N);
+            ICollection<Double> keys = Enumerable.Range(0,N).Select( i => i * 0.1).ToList();
+            ICollection<Double> values = discretizer.Discretize(f, keys);
 
-            //model.Series.Add(CreateSeries("DFT Magnitude", discreteTransform.Magnitudes));
-            //model.Series.Add(CreateSeries("FFT Magnitude", fastTransform.Magnitudes));
-            //model.Series.Add(CreateSeries("DFT Phase", discreteTransform.Phases));
-            //model.Series.Add(CreateSeries("FFT Phase", fastTransform.Phases));
+            ICollection<Complex> discreteData = discreteTransform.DoTransform(values); //DoTransform(f, N);
+            ICollection<Complex> fastData = fastTransform.DoTransform(values); //DoTransform(f, N);
+
+            //model.Series.Add(seriesBuilder.CreateSeries("DFT Magnitude", discreteTransform.Magnitudes));
+            //model.Series.Add(seriesBuilder.CreateSeries("FFT Magnitude", fastTransform.Magnitudes));
+            //model.Series.Add(seriesBuilder.CreateSeries("DFT Phase", discreteTransform.Phases));
+            //model.Series.Add(seriesBuilder.CreateSeries("FFT Phase", fastTransform.Phases));
 
             discreteTransform.DoTransformReverse(discreteData);
             fastTransform.DoTransformReverse(fastData);
-            Discretizer discretizer = new Discretizer();
-            model.Series.Add(CreateSeries("Original F(x)", discretizer.Discretize(f, 0, N, 0.01)));
-            model.Series.Add(CreateSeries("Inverse FFT", fastTransform.Magnitudes));
-            model.Series.Add(CreateSeries("Inverse DFT", discreteTransform.Magnitudes));
+
+            model.Series.Add(seriesBuilder.CreateSeries("Original F(x)", discretizer.Discretize(f, 0, N, 0.01)));
+            model.Series.Add(seriesBuilder.CreateSeries("Inverse FFT", keys, fastTransform.Magnitudes));
+            model.Series.Add(seriesBuilder.CreateSeries("Inverse DFT", keys, discreteTransform.Magnitudes));
 
             model.Axes.Add(new LinearAxis(AxisPosition.Left, 0, N));
             model.Axes.Add(new LinearAxis(AxisPosition.Bottom));
+            
             MyPlotModel.Model = model;
-        }
-
-        private LineSeries CreateSeries(String name, ICollection<Double> data)
-        {
-            LineSeries ls = new LineSeries(name);
-            IList<IDataPoint> points = data.Select((x, i) => ((IDataPoint)new DataPoint(i, x))).ToList();
-            ls.Points = points;
-            return ls;
-        }
-
-
-        private LineSeries CreateSeries(String name, IDictionary<Double, Double> data)
-        {
-            LineSeries ls = new LineSeries(name);
-            IList<IDataPoint> points = data.Select(x => ((IDataPoint)new DataPoint(x.Key, x.Value))).ToList();
-            ls.Points = points;
-            return ls;
         }
     }
 }

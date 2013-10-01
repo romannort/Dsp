@@ -50,7 +50,7 @@ namespace Dsp.DiscreteFourierTransform
 				result += subSum;
 			}
             Double inverseCoef = n;
-            return !inverse ? result : result / inverseCoef; 
+            return inverse ? result : result / inverseCoef; 
 		}
 
 		private Complex Multiplier(Int32 m, Int32 k, Int32 n)
