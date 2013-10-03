@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dsp
 {
@@ -45,6 +43,21 @@ namespace Dsp
         {
             // Assume the data has only Real part
             return data.Select(x => x.Magnitude).ToList();
+        }
+
+        protected void SetResultsInverse(ICollection<Complex> data)
+        {
+            Magnitudes.Clear();
+            Phases.Clear();
+            foreach (var complex in data)
+            {
+                Int32 inverseCoeff = 1;
+                if (Math.Abs(complex.Phase - 0) > 0.01) {
+                    inverseCoeff *= -1;
+                }
+                Magnitudes.Add(complex.Magnitude * inverseCoeff);
+                Phases.Add(0);
+            }
         }
     }
 }

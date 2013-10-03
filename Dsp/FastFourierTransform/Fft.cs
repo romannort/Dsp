@@ -33,6 +33,7 @@ namespace Dsp.FastFourierTransform
         {
             inverse = true;
             ICollection<Complex> indices = TransformInner(data);
+            SetResultsInverse(indices);
             // Assume all numbers are real
             return Magnitudes;
         }
@@ -90,7 +91,63 @@ namespace Dsp.FastFourierTransform
         private Complex Multiplier(Int32 m, Int32 n)
         {
             Int32 reverseCoeff = inverse ? 1 : -1;
-            return Complex.Pow(Math.E, -1 * 2 * Math.PI * Complex.ImaginaryOne * m / n);
+            return Complex.Pow(Math.E, reverseCoeff * 2 * Math.PI * Complex.ImaginaryOne * m / n);
+        }
+
+        /// <summary>
+        /// Swap data indices whenever index i has binary                                                        
+        /// digits reversed from index j, where data is                                                          
+        /// two doubles per index.                                                                               
+        /// </summary>                                        
+        /// <remarks> Useful for FFT DIT algorithm.</remarks>                                                   
+        /// <param name="data"></param>                                                                          
+        /// <param name="n"></param>                                                                             
+        private static void Reverse(IList<double> data, int n)
+        {
+            // bit reverse the indices. This is exercise 5 in section                                            
+            // 7.2.1.1 of Knuth's TAOCP the idea is a binary counter                                             
+            // in k and one with bits reversed in j                                                              
+            int j = 0, k = 0; // Knuth R1: initialize                                                            
+            var top = n / 2;  // this is Knuth's 2^(n-1)                                                         
+            while (true)
+            {
+                // Knuth R2: swap - swap j+1 and k+2^(n-1), 2 entries each                                       
+                var t = data[j + 2];
+                data[j + 2] = data[k + n];
+                data[k + n] = t;
+                t = data[j + 3];
+                data[j + 3] = data[k + n + 1];
+                data[k + n + 1] = t;
+                if (j > k)
+                { // swap two more                                                                               
+                    // j and k                                                                                   
+                    t = data[j];
+                    data[j] = data[k];
+                    data[k] = t;
+                    t = data[j + 1];
+                    data[j + 1] = data[k + 1];
+                    data[k + 1] = t;
+                    // j + top + 1 and k+top + 1                                                                 
+                    t = data[j + n + 2];
+                    data[j + n + 2] = data[k + n + 2];
+                    data[k + n + 2] = t;
+                    t = data[j + n + 3];
+                    data[j + n + 3] = data[k + n + 3];
+                    data[k + n + 3] = t;
+                }
+                // Knuth R3: advance k                                                                           
+                k += 4;
+                if (k >= n)
+                    break;
+                // Knuth R4: advance j                                                                           
+                var h = top;
+                while (j >= h)
+                {
+                    j -= h;
+                    h /= 2;
+                }
+                j += h;
+            } // bit reverse loop                                                                                
         }
 
 	}

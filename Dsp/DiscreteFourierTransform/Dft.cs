@@ -18,6 +18,7 @@ namespace Dsp.DiscreteFourierTransform
         public override ICollection<Complex> DoTransform(ICollection<double> data)
         {
             ICollection<Complex> result = TransfromInner(ToComplex(data));
+            SetResults(result);
             return result;
         }
 
@@ -25,6 +26,7 @@ namespace Dsp.DiscreteFourierTransform
         {
             inverse = true;
             ICollection<Complex> result = TransfromInner(data);
+            SetResultsInverse(result);
             // Assume all results are Real so Magnitue equal to real value and Phase == 0
             return Magnitudes;
         }
@@ -38,7 +40,6 @@ namespace Dsp.DiscreteFourierTransform
                 Complex point = CalculatePoint(data, k, n);
                 result.Add(point);
             }
-            SetResults(result);
             return result;
         }
 
