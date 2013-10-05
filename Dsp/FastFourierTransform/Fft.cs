@@ -5,14 +5,10 @@ using System.Numerics;
 
 namespace Dsp.FastFourierTransform
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    /// <summary> Makes Fourier transform using Radix-2 DIF method. </summary>
 	public class Fft: FourierTransform
 	{
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary> Does fast fouries transform. </summary>
 		/// <param name="func"></param>
 		/// <param name="n"></param>
 		/// <returns></returns>
@@ -42,18 +38,14 @@ namespace Dsp.FastFourierTransform
         {
             IList<Complex> indices = FftDifRecursive((IList<Complex>)data, data.Count);
             SetResults(indices);
-            ICollection<Complex> result;
             if (!inverse)
             {
-                result = indices.Select(x => x / data.Count).ToList();
+                ICollection<Complex> result = indices.Select(x => x / data.Count).ToList();
                 SetResults(result);
                 return result;
             }
-            else
-            {
-                SetResults(indices);
-                return indices;
-            }
+            SetResults(indices);
+            return indices;
         }
 
         /// <summary>Recursive FFT (decimation in frequency) </summary>
@@ -66,15 +58,18 @@ namespace Dsp.FastFourierTransform
 				return vectorA;
 			}
 
-			Complex w = 1;
             Int32 n2 = n / 2;
             IList<Complex> vectorOdd = new Complex[n2];
 			IList<Complex> vectorEven = new Complex[n2];
             
             for (Int32 j = 0; j < n2; ++j) {
 				vectorEven[j] = vectorA[j] + vectorA[j + n2];
+                PerformanceStats.FftAdditions++;
+
 				vectorOdd[j] = (vectorA[j] - vectorA[j + n2]) * Multiplier(j, n);
-			}
+                PerformanceStats.FftAdditions++;
+                PerformanceStats.FftMultiplications++;
+            }
 
 			IList<Complex> processedEven = FftDifRecursive(vectorEven, n2);
 			IList<Complex> processedOdd = FftDifRecursive(vectorOdd, n2);
@@ -91,6 +86,7 @@ namespace Dsp.FastFourierTransform
         private Complex Multiplier(Int32 m, Int32 n)
         {
             Int32 reverseCoeff = inverse ? 1 : -1;
+            // PerformanceStats ?
             return Complex.Pow(Math.E, reverseCoeff * 2 * Math.PI * Complex.ImaginaryOne * m / n);
         }
 
@@ -149,6 +145,5 @@ namespace Dsp.FastFourierTransform
                 j += h;
             } // bit reverse loop                                                                                
         }
-
 	}
 }

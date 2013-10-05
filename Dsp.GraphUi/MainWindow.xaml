@@ -1,24 +1,34 @@
 ﻿<Window x:Class="Dsp.GraphUi.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:oxy="http://oxyplot.codeplex.com"
-        
+        xmlns:oxy="http://oxyplot.codeplex.com" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:support="clr-namespace:Dsp.GraphUi.Support" mc:Ignorable="d"
+
         Title="Fourier Trasnform" Height="350" Width="525" MinHeight="350" MinWidth="525">
+    
+    <Window.Resources>
+        <support:SeriesNames x:Key="SeriesNames"/>
+    </Window.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-            <Button Name="btnFunc" Width="100" Content="F(x)"/>
-            <Button Name="btnFft" Width="100" Content="FFT" />
-            <Button Name="btnDft" Width="100" Content="DFT" />
-            <Button Name="btnReverseTransform" Width="100" Content="Reverse"/>
-            <Button Name="btnStats" Width="100" Content="Stats" Margin="25,0,0,0" />
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" DataContext="{StaticResource SeriesNames}" >
+            <Button Name="btnFunc" Width="100" Content="F(x)" Click="Btn_OnClick" Tag="{Binding Path=OriginalF}"/>
+            <Button Name="btnFftMagn" Width="100" Content="FFT Magn" Click="Btn_OnClick" Tag="{Binding Path=FftMagnitudes}" />
+            <Button Name="btnFftPhase" Width="100" Content="FFT Phase" Click="Btn_OnClick" Tag="{Binding Path=FftPhases}" />
+            <Button Name="btnDftNagn" Width="100" Content="DFT Magn" Click="Btn_OnClick" Tag="{Binding Path=DftMagnitudes}"/>
+            <Button Name="btnDftPhase" Width="100" Content="DFT Phase" Click="Btn_OnClick" Tag="{Binding Path=DftPhases}"/>
+            <Button Name="btnInverseFft" Width="100" Content="FFT Inverse" Click="Btn_OnClick" Tag="{Binding Path=InverseFft}"/>
+            <Button Name="btnInverseDft" Width="100" Content="FFT Inverse" Click="Btn_OnClick" Tag="{Binding Path=InverseDft}"/>
+            <Button Name="btnStats" Width="100" Content="Stats" Margin="0,10,0,0"/>
         </StackPanel>
-        <oxy:Plot Name="MyPlotModel" Grid.Row="1" Grid.Column="0"/>
+        <oxy:Plot Name="MyPlotModel" Grid.Row="0" Grid.Column="1"/>
     </Grid>
 </Window>
