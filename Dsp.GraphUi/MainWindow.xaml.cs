@@ -25,6 +25,11 @@ namespace Dsp.GraphUi
         
         private const Int32 N = 16;
 
+        private const Double Step = 0.5;
+
+        private const Double StepOrigin = 0.01;
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -46,9 +51,9 @@ namespace Dsp.GraphUi
             Discretizer discretizer = new Discretizer();
             LineSeriesBuilder seriesBuilder = new LineSeriesBuilder();
 
-            const Double step = 0.1;
 
-            ICollection<Double> keys = Enumerable.Range(0, N).Select(i => i * step).ToList();
+            // Step < 1 
+            ICollection<Double> keys = Enumerable.Range(0, N).Select(i => i * Step).ToList();
             ICollection<Double> originalValues = discretizer.Discretize(f, keys);
 
             ICollection<Complex> discreteTransformData = discreteTransform.DoTransform(originalValues);
@@ -59,10 +64,11 @@ namespace Dsp.GraphUi
             seriesManager.Add(SeriesNames.DftPhases, seriesBuilder.CreateSeries("DFT Phase", discreteTransform.Phases));
             seriesManager.Add(SeriesNames.FftPhases, seriesBuilder.CreateSeries("FFT Phase", fastTransform.Phases));
 
+            PopulateStats();
             discreteTransform.DoTransformReverse(discreteTransformData);
             fastTransform.DoTransformReverse(fastTransformData);
 
-            seriesManager.Add(SeriesNames.OriginalF, seriesBuilder.CreateSeries("Original F(x)", discretizer.Discretize(f, 0, N, step)));
+            seriesManager.Add(SeriesNames.OriginalF, seriesBuilder.CreateSeries("Original F(x)", discretizer.Discretize(f, 0, N * Step, StepOrigin)));
             seriesManager.Add(SeriesNames.InverseFft, seriesBuilder.CreateSeries("Inverse FFT", keys, fastTransform.Magnitudes));
             seriesManager.Add(SeriesNames.InverseDft, seriesBuilder.CreateSeries("Inverse DFT", keys, discreteTransform.Magnitudes));
         }
@@ -70,19 +76,22 @@ namespace Dsp.GraphUi
         private void Btn_OnClick(object sender, RoutedEventArgs e)
         {
             FrameworkElement element = sender as FrameworkElement;
-            String seriesName = element.Tag as String;
-            Color newColor = Colors.DarkGray;
-            if (seriesManager.ActiveSeries.Contains(seriesName))
+            if (element != null)
             {
-                seriesManager.ActiveSeries.Remove(seriesName);
+                String seriesName = element.Tag as String;
+                Color newColor = new Color() {A = 0xff, R = 0xdd, G = 0xdd, B = 0xdd};
+                if (seriesManager.ActiveSeries.Contains(seriesName))
+                {
+                    seriesManager.ActiveSeries.Remove(seriesName);
+                }
+                else
+                {
+                    seriesManager.ActiveSeries.Add(seriesName);
+                    newColor = Colors.Chartreuse;
+                }
+                ((Button)element).Background = new SolidColorBrush(newColor);
+                UpdatePlot();    
             }
-            else
-            {
-                seriesManager.ActiveSeries.Add(seriesName);
-                newColor = Colors.Chartreuse;
-            }
-            ((Button)element).Background = new SolidColorBrush(newColor);
-            UpdatePlot();
         }
 
         private void UpdatePlot()
@@ -90,8 +99,8 @@ namespace Dsp.GraphUi
             PlotModel model = new PlotModel("Fourier Transform");
 
             AddActiveSeries(model);
-            model.Axes.Add(new LinearAxis(AxisPosition.Left, 0, N));
-            model.Axes.Add(new LinearAxis(AxisPosition.Bottom));
+            model.Axes.Add(new LinearAxis(AxisPosition.Left, -3));
+            model.Axes.Add(new LinearAxis(AxisPosition.Bottom, 0, N * Step));
 
             MyPlotModel.Model = model;
         }
@@ -102,6 +111,25 @@ namespace Dsp.GraphUi
             {
                 model.Series.Add(series);
             }
+        }
+
+        private void PopulateStats()
+        {
+            
+            string text = lblDftAdds.Content as String;
+            lblDftAdds.Content = text + PerformanceStats.DftAdditions;
+
+            text = lblFftAdds.Content as String;
+            lblFftAdds.Content = text + PerformanceStats.FftAdditions;
+
+            text = lblDftMuls.Content as String;
+            lblDftMuls.Content = text + PerformanceStats.DftMultiplications;
+
+            text = lblFftMuls.Content as String;
+            lblFftMuls.Content = text + PerformanceStats.FftMultiplications;
+
+            text = lblNumber.Content as String;
+            lblNumber.Content = text + N;
         }
     }
 }

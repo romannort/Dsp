@@ -48,10 +48,10 @@ namespace Dsp.DiscreteFourierTransform
 			Complex result = new Complex();
 			for (int m = 0; m < n; ++m) {
 				Complex subSum = sourceData.ElementAt(m) * Multiplier(m, k, n);
-			    PerformanceStats.DftMultiplicaiton++;
+			    PerformanceStats.DftMultiplications++;
 
                 result += subSum;
-			    PerformanceStats.DftAddition++;
+			    PerformanceStats.DftAdditions++;
 			}
             Double inverseCoef = n;
             return inverse ? result : result / inverseCoef; 
