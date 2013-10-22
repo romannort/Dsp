@@ -29,6 +29,7 @@ namespace Dsp.FastFourierTransform
         {
             inverse = true;
             ICollection<Complex> indices = TransformInner(data);
+            SetResults(indices);
             SetResultsInverse(indices);
             // Assume all numbers are real
             return Magnitudes;

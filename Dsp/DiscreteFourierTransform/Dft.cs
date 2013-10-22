@@ -26,6 +26,7 @@ namespace Dsp.DiscreteFourierTransform
         {
             inverse = true;
             ICollection<Complex> result = TransfromInner(data);
+            SetResults(result);
             SetResultsInverse(result);
             // Assume all results are Real so Magnitue equal to real value and Phase == 0
             return Magnitudes;

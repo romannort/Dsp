@@ -52,7 +52,8 @@ namespace Dsp
             foreach (var complex in data)
             {
                 Int32 inverseCoeff = 1;
-                if (Math.Abs(complex.Phase - 0) > 0.01) {
+                if ((Math.Abs(complex.Phase) - 3.14159265358) > -2)
+                {
                     inverseCoeff *= -1;
                 }
                 Magnitudes.Add(complex.Magnitude * inverseCoeff);
