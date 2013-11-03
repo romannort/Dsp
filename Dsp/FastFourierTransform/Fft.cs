@@ -25,7 +25,7 @@ namespace Dsp.FastFourierTransform
             return indices;
         }
 
-        public override ICollection<Double> DoTransformReverse(ICollection<Complex> data)
+        public override ICollection<Double> DoTransformInverse(ICollection<Complex> data)
         {
             inverse = true;
             ICollection<Complex> indices = TransformInner(data);

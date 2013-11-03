@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Dsp.GraphUi.Support;
+using Dsp.Support;
 using OxyPlot;
 using Dsp.DiscreteFourierTransform;
 using OxyPlot.Axes;
@@ -23,7 +24,7 @@ namespace Dsp.GraphUi
 
         private readonly Func<Double, Double> f = x => Math.Sin(x) + Math.Cos(4 * x);
         
-        private const Int32 N = 256;
+        private const Int32 N = 16;
 
         private const double Period = 6.28;
 
@@ -49,12 +50,10 @@ namespace Dsp.GraphUi
             Discretizer discretizer = new Discretizer();
             LineSeriesBuilder seriesBuilder = new LineSeriesBuilder();
 
-            // Step < 1 
-            //ICollection<Double> keys = Enumerable.Range(0, N).Select(i => i * Step).ToList();
-            //ICollection<Double> originalValues = discretizer.Discretize(f, keys);
 
-            IDictionary<double, double> discreteData =
-                discretizer.Discretize(f, 0, Period, Period/N).Take(N).ToDictionary(x => x.Key, x => x.Value);
+            IDictionary<double, double> discreteData = discretizer.Discretize(f, 0, Period, Period/N)
+                .Take(N) // Take only the given number of elements. Otherwise problem appears in FFT.
+                .ToDictionary(x => x.Key, x => x.Value);
 
 
             ICollection<Complex> discreteTransformData = discreteTransform.DoTransform(discreteData.Values);
@@ -66,25 +65,12 @@ namespace Dsp.GraphUi
             seriesManager.Add(SeriesNames.FftPhases, seriesBuilder.CreateSeries("FFT Phase", discreteData.Keys, fastTransform.Phases));
 
             PopulateStats();
-            discreteTransform.DoTransformReverse(discreteTransformData);
-            fastTransform.DoTransformReverse(fastTransformData);
-            //seriesManager.Add(SeriesNames.OriginalF, seriesBuilder.CreateSeries("Original F(x)", discretizer.Discretize(f, 0, N * Step, StepOrigin)));
-            seriesManager.Add(SeriesNames.OriginalF, seriesBuilder.CreateSeries("Original F(x)", discretizer.Discretize(f, 0, Period, Period / N)));
+            discreteTransform.DoTransformInverse(discreteTransformData);
+            fastTransform.DoTransformInverse(fastTransformData);
+            
+            seriesManager.Add(SeriesNames.OriginalF, seriesBuilder.CreateSeries("Original F(x)", discretizer.Discretize(f, 0, Period, 0.01)));
             seriesManager.Add(SeriesNames.InverseFft, seriesBuilder.CreateSeries("Inverse FFT", discreteData.Keys, fastTransform.Magnitudes));
             seriesManager.Add(SeriesNames.InverseDft, seriesBuilder.CreateSeries("Inverse DFT", discreteData.Keys, discreteTransform.Magnitudes));
-
-
-            //ICollection<Double> keysNonScaled = Enumerable.Range(0, N).Select(x => (double)x).ToList();
-            //ICollection<Double> originalValuesNonScaled = discretizer.Discretize(f, keysNonScaled);
-
-            //discreteTransform.DoTransform(originalValuesNonScaled);
-            //fastTransform.DoTransform(originalValuesNonScaled);
-
-            //seriesManager.Add(SeriesNames.DftMagnitudes, seriesBuilder.CreateSeries("DFT Magnitude", discreteTransform.Magnitudes));
-            //seriesManager.Add(SeriesNames.FftMagnitudes, seriesBuilder.CreateSeries("FFT Magnitude", fastTransform.Magnitudes));
-            //seriesManager.Add(SeriesNames.DftPhases, seriesBuilder.CreateSeries("DFT Phase", discreteTransform.Phases));
-            //seriesManager.Add(SeriesNames.FftPhases, seriesBuilder.CreateSeries("FFT Phase", fastTransform.Phases));
-           
         }
 
         private void Btn_OnClick(object sender, RoutedEventArgs e)

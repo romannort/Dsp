@@ -22,7 +22,7 @@ namespace Dsp.DiscreteFourierTransform
             return result;
         }
 
-        public override ICollection<double> DoTransformReverse(ICollection<Complex> data)
+        public override ICollection<double> DoTransformInverse(ICollection<Complex> data)
         {
             inverse = true;
             ICollection<Complex> result = TransfromInner(data);

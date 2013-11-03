@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dsp
 {
@@ -17,7 +15,7 @@ namespace Dsp
                 Double value = f(dot * step);
                 result.Add(value);
             }
-            return result;
+            return result.Take(dotsNumber).ToList();
         }
 
         public IDictionary<Double, Double> Discretize(Func<Double, Double> f, Double startValue, Double endValue, Double step)

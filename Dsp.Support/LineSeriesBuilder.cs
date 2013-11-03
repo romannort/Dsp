@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using OxyPlot;
-using Dsp;
 using OxyPlot.Series;
 
-namespace Dsp.GraphUi.Support
+namespace Dsp.Support
 {
-    internal class LineSeriesBuilder
+    public class LineSeriesBuilder
     {
         /// <summary>Bad workaround for fixed colors... </summary>
         private readonly ICollection<OxyColor> colors = new List<OxyColor>()
@@ -21,7 +20,7 @@ namespace Dsp.GraphUi.Support
                 OxyColors.Orange
             };
 
-        internal LineSeries CreateSeries(String name, ICollection<Double> data)
+        public LineSeries CreateSeries(String name, ICollection<Double> data)
         {
             LineSeries ls = new LineSeries(name);
             IList<IDataPoint> points = data.Select((x, i) => ((IDataPoint)new DataPoint(i, x))).ToList();
@@ -31,7 +30,7 @@ namespace Dsp.GraphUi.Support
             return ls;
         }
 
-        internal LineSeries CreateSeries(String name, IDictionary<Double, Double> data)
+        public LineSeries CreateSeries(String name, IDictionary<Double, Double> data)
         {
             LineSeries ls = new LineSeries(name);
             IList<IDataPoint> points = data.Select(x => ((IDataPoint)new DataPoint(x.Key, x.Value))).ToList();
@@ -41,10 +40,10 @@ namespace Dsp.GraphUi.Support
             return ls;
         }
 
-        internal LineSeries CreateSeries(String name, ICollection<Double> xParts, ICollection<Double> yParts)
+        public LineSeries CreateSeries(String name, ICollection<Double> xParts, ICollection<Double> yParts)
         {
             if (xParts.Count != yParts.Count) {
-                throw new ArgumentException("Number of elements in parts doesn't match.");
+                throw new ArgumentException("Number of elements in the parts doesn't match.");
             }
             LineSeries ls = new LineSeries(name);
             ls.Points = xParts.Select((x, i) => ((IDataPoint)new DataPoint(x, yParts.ElementAt(i)))).ToList();

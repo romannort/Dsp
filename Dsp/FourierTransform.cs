@@ -26,7 +26,7 @@ namespace Dsp
 
         public abstract ICollection<Complex> DoTransform(ICollection<Double> data);
 
-        public abstract ICollection<Double> DoTransformReverse(ICollection<Complex> data);
+        public abstract ICollection<Double> DoTransformInverse(ICollection<Complex> data);
 
         protected void SetResults(ICollection<Complex> result)
         {
