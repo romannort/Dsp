@@ -17,7 +17,11 @@ namespace Dsp.CorrelationConvolution
                 {
                     if (m - h > 0 && m - h < n)
                     {
-                        value += x.ElementAt(h) * y.ElementAt(m - h);   
+                        value += y.ElementAt(m - h) * x.ElementAt(h);   
+                    }
+                    if (m - h < 0)
+                    {
+                        value += y.ElementAt(n + m - h) * x.ElementAt(h);   
                     }
                 }
                 value /= n;

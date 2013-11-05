@@ -19,16 +19,20 @@ namespace Dsp.CorrelationConvolution
         public void Start( /*Func<double, double> x, Func<double, double> y*/)
         {
             const double start = 0;
-            const double end = 128;
-            const double step = 1.0; // 0.250;
+            const double end = 4*Math.PI;
+            //const double step = 1.0; // 0.250;
+            const int dotsNumber = 128;
 
-            Func<double, double> x = a => Math.Cos(a);
-            Func<double, double> y = b => Math.Sin(b);
+            Func<double, double> x = a => Math.Sin(a) + Math.Cos(4*a);
+            Func<double, double> y = b => Math.Cos(4*b);
 
 
             Discretizer discretizer = new Discretizer();
-            IDictionary<Double, Double> xData = discretizer.Discretize(x, start, end, step);
-            IDictionary<Double, Double> yData = discretizer.Discretize(y, start, end, step);
+            //IDictionary<Double, Double> xData = discretizer.Discretize(x, start, end, step);
+            //IDictionary<Double, Double> yData = discretizer.Discretize(y, start, end, step);
+
+            IDictionary<Double, Double> xData = discretizer.Discretize(x, start, end, dotsNumber);
+            IDictionary<Double, Double> yData = discretizer.Discretize(y, start, end, dotsNumber);
 
             DiscreteConvolution dConvolution = new DiscreteConvolution();
             ICollection<Double> discreteConvolutionResult = dConvolution.Do(xData.Values, yData.Values, xData.Count);

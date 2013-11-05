@@ -31,6 +31,18 @@ namespace Dsp
             return result;
         }
 
+        public IDictionary<Double, Double> Discretize(Func<Double, Double> f, Double startValue, Double endValue, int pointsNumber)
+        {
+            if (endValue < startValue)
+            {
+                throw new ArgumentException("StartValue less than EndValue");
+            }
+            double step = (endValue - startValue)/pointsNumber;
+            IDictionary<Double, Double> result = this.Discretize(f, startValue, endValue, step)
+                .Take(pointsNumber).ToDictionary(x => x.Key, x => x.Value);
+            return result;
+        }
+
         public ICollection<Double> Discretize(Func<Double,Double> f, ICollection<Double> keys)
         {
             ICollection<Double> result = keys.Select(f).ToList();
