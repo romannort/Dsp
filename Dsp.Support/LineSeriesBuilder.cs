@@ -17,7 +17,9 @@ namespace Dsp.Support
                 OxyColors.Yellow,
                 OxyColors.Purple,
                 OxyColors.Black,
-                OxyColors.Orange
+                OxyColors.Orange,
+                OxyColors.Crimson,
+                OxyColors.DarkBlue
             };
 
         public LineSeries CreateSeries(String name, ICollection<Double> data)

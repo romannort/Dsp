@@ -20,17 +20,13 @@ namespace Dsp.CorrelationConvolution
         {
             const double start = 0;
             const double end = 4*Math.PI;
-            //const double step = 1.0; // 0.250;
-            const int dotsNumber = 128;
+            const int dotsNumber = 256;
 
-            Func<double, double> x = a => Math.Sin(a) + Math.Cos(4*a);
-            Func<double, double> y = b => Math.Cos(4*b);
-
+            Func<double, double> x = b => Math.Sin(4*b);
+            Func<double, double> y = a => Math.Sin(a) + Math.Cos(4*a);
 
             Discretizer discretizer = new Discretizer();
-            //IDictionary<Double, Double> xData = discretizer.Discretize(x, start, end, step);
-            //IDictionary<Double, Double> yData = discretizer.Discretize(y, start, end, step);
-
+            
             IDictionary<Double, Double> xData = discretizer.Discretize(x, start, end, dotsNumber);
             IDictionary<Double, Double> yData = discretizer.Discretize(y, start, end, dotsNumber);
 
@@ -40,12 +36,25 @@ namespace Dsp.CorrelationConvolution
             FastConvolution fConvolution = new FastConvolution();
             ICollection<Double> fastConvolutionResult = fConvolution.Do(xData.Values, yData.Values, xData.Count);
 
-
             DiscreteConvolution = discreteConvolutionResult
                 .Select((v, i) => new KeyValuePair<Double, Double>(xData.Keys.ElementAt(i), v))
                 .ToDictionary(kp => kp.Key, kp => kp.Value);
 
             FastConvolution = fastConvolutionResult
+                .Select((v, i) => new KeyValuePair<Double, Double>(xData.Keys.ElementAt(i), v))
+                .ToDictionary(kp => kp.Key, kp => kp.Value);
+
+            DiscreteCorrelation dCorrelation = new DiscreteCorrelation();
+            ICollection<Double> discreteCorrelationResult = dCorrelation.Do(xData.Values, yData.Values, xData.Count);
+
+            FastCorrelation fCorrelation = new FastCorrelation();
+            ICollection<Double> fastCorrelationResult = fCorrelation.Do(xData.Values, yData.Values, xData.Count);
+
+            DiscreteCorrelation = discreteCorrelationResult
+                .Select((v, i) => new KeyValuePair<Double, Double>(xData.Keys.ElementAt(i), v))
+                .ToDictionary(kp => kp.Key, kp => kp.Value);
+
+            FastCorrelation = fastCorrelationResult
                 .Select((v, i) => new KeyValuePair<Double, Double>(xData.Keys.ElementAt(i), v))
                 .ToDictionary(kp => kp.Key, kp => kp.Value);
         }

@@ -18,5 +18,9 @@
         public static string InverseFft { get { return UiResources.InverseFft; } }
 
         public static string InverseDft { get { return UiResources.InverseDft; } }
+
+        public static string ForwardFwt { get { return "FWT"; } }
+
+        public static string InverseFwt { get { return "IFWT"; } }
     }
 }

@@ -24,7 +24,7 @@ namespace Dsp.GraphUi
 
         private readonly Func<Double, Double> f = x => Math.Sin(x) + Math.Cos(4 * x);
         
-        private const Int32 N = 16;
+        private const Int32 N = 128;
 
         private const double Period = 6.28;
 
@@ -46,6 +46,7 @@ namespace Dsp.GraphUi
         {
             FourierTransform discreteTransform = new Dft();
             FourierTransform fastTransform = new Fft();
+            FastWalshTransform walshTransform = new FastWalshTransform();
 
             Discretizer discretizer = new Discretizer();
             LineSeriesBuilder seriesBuilder = new LineSeriesBuilder();
@@ -55,6 +56,7 @@ namespace Dsp.GraphUi
                 .Take(N) // Take only the given number of elements. Otherwise problem appears in FFT.
                 .ToDictionary(x => x.Key, x => x.Value);
 
+            double[] fwtData = walshTransform.DoTransform(discreteData.Values.ToArray());
 
             ICollection<Complex> discreteTransformData = discreteTransform.DoTransform(discreteData.Values);
             ICollection<Complex> fastTransformData = fastTransform.DoTransform(discreteData.Values);
@@ -63,11 +65,16 @@ namespace Dsp.GraphUi
             seriesManager.Add(SeriesNames.FftMagnitudes, seriesBuilder.CreateSeries("FFT Magnitude", discreteData.Keys, fastTransform.Magnitudes));
             seriesManager.Add(SeriesNames.DftPhases, seriesBuilder.CreateSeries("DFT Phase", discreteData.Keys, discreteTransform.Phases));
             seriesManager.Add(SeriesNames.FftPhases, seriesBuilder.CreateSeries("FFT Phase", discreteData.Keys, fastTransform.Phases));
+            seriesManager.Add(SeriesNames.ForwardFwt, seriesBuilder.CreateSeries("FWT", discreteData.Keys, fwtData));
+            
+            double[] fwtDataInverse = walshTransform.DoTransformInverse(fwtData);
+            seriesManager.Add(SeriesNames.InverseFwt, seriesBuilder.CreateSeries("IFWT", discreteData.Keys, fwtDataInverse));
 
             PopulateStats();
             discreteTransform.DoTransformInverse(discreteTransformData);
             fastTransform.DoTransformInverse(fastTransformData);
             
+
             seriesManager.Add(SeriesNames.OriginalF, seriesBuilder.CreateSeries("Original F(x)", discretizer.Discretize(f, 0, Period, 0.01)));
             seriesManager.Add(SeriesNames.InverseFft, seriesBuilder.CreateSeries("Inverse FFT", discreteData.Keys, fastTransform.Magnitudes));
             seriesManager.Add(SeriesNames.InverseDft, seriesBuilder.CreateSeries("Inverse DFT", discreteData.Keys, discreteTransform.Magnitudes));

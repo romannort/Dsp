@@ -61,6 +61,7 @@
     <Compile Include="DiscreteFourierTransform\Dft.cs" />
     <Compile Include="Discretizer.cs" />
     <Compile Include="FastFourierTransform\Fft.cs" />
+    <Compile Include="FastWalshTransform.cs" />
     <Compile Include="FourierTransform.cs" />
     <Compile Include="PerformanceStats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

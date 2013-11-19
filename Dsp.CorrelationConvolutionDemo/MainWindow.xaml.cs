@@ -59,18 +59,20 @@ namespace Dsp.CorrelationConvolutionDemo
             seriesManager.Add("Fast Convln", seriesBuilder.CreateSeries("Fast Convln",
                 demo.FastConvolution.Keys, demo.FastConvolution.Values));
 
-            //seriesManager.Add(SeriesNames.FftMagnitudes, seriesBuilder.CreateSeries("FFT Magnitude", discreteData.Keys, fastTransform.Magnitudes));
-            //seriesManager.Add(SeriesNames.DftPhases, seriesBuilder.CreateSeries("DFT Phase", discreteData.Keys, discreteTransform.Phases));
-            //seriesManager.Add(SeriesNames.FftPhases, seriesBuilder.CreateSeries("FFT Phase", discreteData.Keys, fastTransform.Phases));
+            seriesManager.Add("D Corr", seriesBuilder.CreateSeries("D Corr",
+                demo.DiscreteCorrelation.Keys, demo.DiscreteCorrelation.Values));
 
-            //seriesManager.Add(SeriesNames.OriginalF, seriesBuilder.CreateSeries("Original F(x)", discretizer.Discretize(f, 0, Period, 0.01)));
-            //seriesManager.Add(SeriesNames.InverseFft, seriesBuilder.CreateSeries("Inverse FFT", discreteData.Keys, fastTransform.Magnitudes));
-            //seriesManager.Add(SeriesNames.InverseDft, seriesBuilder.CreateSeries("Inverse DFT", discreteData.Keys, discreteTransform.Magnitudes));
+            seriesManager.Add("Fast Corr", seriesBuilder.CreateSeries("Fast Corr",
+                demo.FastCorrelation.Keys, demo.FastCorrelation.Values));
 
-
-            // Manually activate these series
+            
+            //Manually activate these series
+            
             seriesManager.ActiveSeries.Add("D Convln");
             seriesManager.ActiveSeries.Add("Fast Convln");
+
+            seriesManager.ActiveSeries.Add("D Corr");
+            seriesManager.ActiveSeries.Add("Fast Corr");
         }
     }
 }

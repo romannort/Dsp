@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace Dsp.CorrelationConvolution
 {
     public class DiscreteCorrelation
     {
-
-        public ICollection<Complex> Do(ICollection<double> x, ICollection<double> y, Int32 n)
+        public ICollection<Double> Do(ICollection<double> x, ICollection<double> y, Int32 n)
         {
-            ICollection<Complex> result = new List<Complex>(n);
+            ICollection<Double> result = new List<Double>(n);
 
             for (int m = 0; m < n; ++m)
             {
                 double value = .0;
                 for (int h = 0; h < n; ++h)
                 {
-                    value = x.ElementAt(h) * y.ElementAt(m + h);
+                    if (m + h >= 0 && m + h < n)
+                    {
+                        value += y.ElementAt(m + h) * x.ElementAt(h);
+                    }
+                    if (m + h >= n)
+                    {
+                        value += y.ElementAt(m + h - n) * x.ElementAt(h);
+                    }
                 }
                 value /= n;
                 result.Add(value);

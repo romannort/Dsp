@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:support="clr-namespace:Dsp.GraphUi.Support" mc:Ignorable="d"
 
-        Title="Fourier Trasnform" Height="350" Width="525" MinHeight="350" MinWidth="525">
-    
+        Title="Fourier Trasnform" Height="384" Width="539" MinHeight="384" MinWidth="539">
+
     <Window.Resources>
         <support:SeriesNames x:Key="SeriesNames"/>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
@@ -27,6 +27,8 @@
             <Button Name="btnDftPhase" Width="100" Content="DFT Phase" Click="Btn_OnClick" Tag="{Binding Path=DftPhases}"/>
             <Button Name="btnInverseFft" Width="100" Content="FFT Inverse" Click="Btn_OnClick" Tag="{Binding Path=InverseFft}"/>
             <Button Name="btnInverseDft" Width="100" Content="DFT Inverse" Click="Btn_OnClick" Tag="{Binding Path=InverseDft}"/>
+            <Button Name="btnFwt" Width="100" Content="FWT" Click="Btn_OnClick" Tag="{Binding Path=ForwardFwt}"/>
+            <Button Name="btnInverseFwt" Width="100" Content="Inverse FWT" Click="Btn_OnClick" Tag="{Binding Path=InverseFwt}"/>
             <Label Name="lblStats" Width="100" Content="Stats" Margin="0,10,0,0" Background="DarkGray"/>
             <Label Name="lblNumber" Content="N  " />
             <Label Name="lblDftAdds" Content="DFT+ " Width="Auto"/>
