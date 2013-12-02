@@ -19,8 +19,8 @@ namespace Dsp
             double[] result = new double[data.Length];
             data.CopyTo(result, 0);
             TransformInternal(ref result);
-            
-            return result;
+
+            return result.Select(x => x / data.Length).ToArray();
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Dsp
             data.CopyTo(result, 0);
             TransformInternal(ref result);
             
-            return result.Select(x => x / data.Length).ToArray();
+            return result;
         }
 
         /// <summary>

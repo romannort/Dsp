@@ -24,7 +24,7 @@ namespace Dsp.GraphUi
 
         private readonly Func<Double, Double> f = x => Math.Sin(x) + Math.Cos(4 * x);
         
-        private const Int32 N = 128;
+        private const Int32 N = 1024;
 
         private const double Period = 6.28;
 
