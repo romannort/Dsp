@@ -84,7 +84,6 @@ namespace Dsp.ImageProcessingDemo
             modifiedImage.WritePixels(new Int32Rect(0, 0, width, height), pixelData, widthInByte, 0);
 
             ModifiedImage.Source = modifiedImage;
-
         }
 
         private void TresholdD_OnClick(object sender, RoutedEventArgs e)

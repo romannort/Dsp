@@ -40,7 +40,7 @@
                 <Image x:Name="OriginalImage"/>
             </Canvas>
             <Canvas Grid.Column="1" Background="White">
-                <Image x:Name="ModifiedImage"/>
+                <Image x:Name="ModifiedImage" Stretch="None"/>
             </Canvas>
         </Grid>
 

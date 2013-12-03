@@ -1,22 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 
 namespace Dsp.ImageProcessing
 {
     public class ImageElementProcessing
     {
-
         public void TresholdD(ref int[] pixelData, int fmin, int fmax)
         {
             const int gmin = 0;
             const int gmax = 255;
             Treshold(ref pixelData, fmin, gmin, fmax, gmax);
         }
-
 
         public void TresholdE(ref int[] pixelData, int gmin, int gmax)
         {
@@ -27,36 +21,36 @@ namespace Dsp.ImageProcessing
 
         public void Treshold(ref int[] pixelData, int fmin, int gmin, int fmax, int gmax)
         {
-            Func<int, int> treshold = f => (int)((double)(f - fmin)/(fmax - fmin)*(gmax - gmin) + gmin);
+
+            const Single colorsNumber = 255f;
+            Single fmin0 = fmin / colorsNumber;
+            Single gmin0 = gmin / colorsNumber;
+            Single fmax0 = fmax / colorsNumber;
+            Single gmax0 = gmax / colorsNumber;
+
+            Func<Single, Single> treshold = f => (Single)((double)(f - fmin0) / (fmax0 - fmin0) * (gmax0 - gmin0) + gmin0);
 
             for (int i = 0; i < pixelData.Length; i++)
             {
-                
-                Channels c = new Channels(pixelData[i]);
+                Color color = Color.FromArgb(pixelData[i]);
+                   Single hue = color.GetHue();
+                    Single saturation = color.GetSaturation();
+                    Single brightness = color.GetBrightness();
+                 
 
-                byte quantizatedBrightness = (byte)(c.Brightness*255);
-                byte quantizatedResult = ChannelTreshold(treshold, quantizatedBrightness);
-                c.Brightness = quantizatedResult/255f;
+                float result = treshold(brightness);
+                if (result > 1) result = 1f;
+                if (result < 0) result = 0f;
+                // --------
 
-                pixelData[i] = c.ToColour();
+                color = ColorFromHsb(hue, saturation, result);
+
+                pixelData[i] = color.ToArgb();
             }
         }
 
 
-        private static byte ChannelTreshold(Func<int, int> treshold,  byte c)
-        {
-            int g = treshold(c);
-            if (g > 255)
-            {
-                g = 255;
-            }
-            if (g < 0)
-            {
-                g = 0;
-            }
-            return (byte)g;
-        }
-
+        
         public void ColorInverse(ref int[] pixelData)
         {
             for (int i = 0; i < pixelData.Length; i++)
@@ -66,56 +60,9 @@ namespace Dsp.ImageProcessing
             }        
         }
 
-        
-    }
-
-
-    internal class Channels
-    {
-        internal Byte A;
-        internal Byte R;
-        internal Byte G;
-        internal Byte B;
-
-        internal Single Hue;
-        internal Single Saturation;
-        internal Single Brightness;
-
-        internal Channels(){}
-
-        internal Channels(Int32 fullColour)
+        private static Color ColorFromHsb(float hue, float saturation, float brightness)
         {
-            B = (Byte) ((fullColour & 0x11000000) >> 24);
-            G = (byte) ((fullColour & 0x00110000) >> 16);
-            R = (byte) ((fullColour & 0x00001100) >> 8);
-            A = (Byte) (fullColour & 0x00000011);
-
-            Color color = Color.FromArgb(A, R, G, B);
-            Hue = color.GetHue();
-            Saturation = color.GetSaturation();
-            Brightness = color.GetBrightness();
-        }
-
-        internal Int32 ToColour()
-        {
-            HsbToRgb();
-
-            Int32 colour = ((Byte)(B) << 24)
-                | ((Byte)(G) << 16)
-                | ((Byte)(R) << 8)
-                | A;
-            
-            return colour;
-        }
-
-        private void HsbToRgb()
-        {
-
-            float hue = Hue;
-            float saturation = Saturation;
-            float brightness = Brightness;
-
-            double r = 0, g = 0, b = 0;
+            double r, g, b;
             if (saturation == 0)
             {
                 r = g = b = brightness;
@@ -164,21 +111,14 @@ namespace Dsp.ImageProcessing
                         b = X;
                         break;
                     default:
-                        Console.WriteLine("ERROR! Wrong Hue sector: " + sectorNumber);
-                        break;
+                        throw  new Exception("ERROR! Wrong Hue sector: " + sectorNumber);
                 }
                 r += M;
                 g += M;
                 b += M;
             }
-            
-            // ------
-            R = (byte)(r * 255);
-            G = (byte)(g * 255);
-            B = (byte)(b * 255);
+            return Color.FromArgb((int)(r * 255), (int)(g * 255), (int)(b * 255));
         }
+   
     }
-
-
-
 }
