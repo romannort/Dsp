@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Dsp.ImageProcessing;
+using Dsp.ImageProcessing.Extensions;
 
 namespace Dsp.ImageProcessingDemo
 {
@@ -71,13 +72,20 @@ namespace Dsp.ImageProcessingDemo
                 Int32.TryParse(FMax.Text, out fmax);
                 imageProcessing.TresholdD(ref pixelData, fmin, fmax);
             }
-            else
+            else if ("E" == method)
             {
                 int gmin = 0;
                 Int32.TryParse(GMin.Text, out gmin);
                 int gmax = 255;
                 Int32.TryParse(GMax.Text, out gmax);
                 imageProcessing.TresholdE(ref pixelData, gmin, gmax);    
+            }
+            else if (method == "Filter")
+            {
+                int[,] pixels = ArrayConverter.To2D(pixelData, modifiedImage.PixelWidth, modifiedImage.PixelHeight);
+                //pixels = imageProcessing.ApplySmooth(pixels);
+                pixels = imageProcessing.MinFilter(pixels);
+                pixelData = ArrayConverter.ToLinear(pixels);
             }
             // --------------------------------
 
@@ -96,6 +104,10 @@ namespace Dsp.ImageProcessingDemo
             ModifyImage("E");
         }
 
+        private void FilterTest_OnClick(object sender, RoutedEventArgs e)
+        {
+            ModifyImage("Filter");
+        }
     }
 }
 

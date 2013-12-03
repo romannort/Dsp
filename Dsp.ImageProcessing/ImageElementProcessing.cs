@@ -50,7 +50,46 @@ namespace Dsp.ImageProcessing
         }
 
 
+        public int[,] ApplySmooth(int[,] pixels, double weight = 2)
+        {
+            ConvolutionMatrix matrix = new ConvolutionMatrix(3);
+            matrix.SetAll(1);
+            matrix.Matrix[1, 1] = weight;
+            matrix.Factor = weight + 8;
+            int[,] result = Convolution3x3.Convolution(pixels, matrix);
+
+            return result;
+        }
+
+        public int[,] MinFilter(int[,] pixels)
+        {
+            int[,] result = Convolution3x3.MinMaxFilter(pixels, "MIN");
+
+            return result;
+        }
+
+        public int[,] MaxFilter(int[,] pixels)
+        {
+            int[,] result = Convolution3x3.MinMaxFilter(pixels, "MAX");
+
+            return result;
+        }
+
+        public int[,] MinMaxFilter(int[,] pixels)
+        {
+            int[,] result = Convolution3x3.MinMaxFilter(pixels, "MIN");
+            result = Convolution3x3.MinMaxFilter(result, "MAX");
+
+            return result;
+        }
+
+        public int[,] Filter(int[,] pixels, ConvolutionMatrix matrix)
+        {
+            int[,] result = Convolution3x3.Convolution(pixels, matrix);
+            return result;
+        }
         
+
         public void ColorInverse(ref int[] pixelData)
         {
             for (int i = 0; i < pixelData.Length; i++)

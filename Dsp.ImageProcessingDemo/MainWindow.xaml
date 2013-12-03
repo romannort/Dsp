@@ -29,6 +29,7 @@
             <TextBox x:Name="GMax" Text="150" Width="30" Margin="0,0,10,0"/>
             <Button x:Name="TresholdD" Content="Treshold D" Margin="10,0,10,0" ClickMode="Release" Click="TresholdD_OnClick"/>
             <Button x:Name="TresholdE" Content="Treshold E" Margin="10,0,10,0" ClickMode="Release" Click="TresholdE_OnClick"/>
+            <Button x:Name="FilterTest" Content="Filter Test" Margin="10,0,10,0" ClickMode="Release" Click="FilterTest_OnClick"/>
         </StackPanel>
         
         <Grid Row="2" Name="CanvasGrid">

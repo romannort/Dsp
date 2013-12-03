@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    internal class ConvolutionMatrix
+    public class ConvolutionMatrix
     {
         /// <summary>
         /// 
