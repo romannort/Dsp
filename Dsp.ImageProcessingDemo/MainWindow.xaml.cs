@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Dsp.ImageProcessing;
 using Dsp.ImageProcessing.Extensions;
+using ArrayConverter = Dsp.ImageProcessing.Extensions.ArrayConverter;
 
 namespace Dsp.ImageProcessingDemo
 {
@@ -16,6 +17,7 @@ namespace Dsp.ImageProcessingDemo
         readonly ImageElementProcessing imageProcessing = new ImageElementProcessing();
 
         private BitmapImage originalImage;
+
 
         public MainWindow()
         {
@@ -38,6 +40,13 @@ namespace Dsp.ImageProcessingDemo
 
             OriginalImage.Source = originalImage;
             ModifiedImage.Source = originalImage;
+
+
+            int[] pixelData = new int[originalImage.PixelHeight*originalImage.PixelWidth];
+            int widthInByte = 4*originalImage.PixelWidth;
+            originalImage.CopyPixels(pixelData, widthInByte, 0);
+            DrawHistogram(pixelData, "ORIGINAL");
+            DrawHistogram(pixelData, "MODIFIED");
         }
 
         // Sample --
@@ -64,34 +73,56 @@ namespace Dsp.ImageProcessingDemo
             modifiedImage.CopyPixels(pixelData, widthInByte, 0);
 
             // ----------- Extern call here --
-            if (method == "D")
+            int[,] pixels;
+            switch (method)
             {
-                int fmin = 0;
-                int fmax = 255;
-                Int32.TryParse(FMin.Text, out fmin);
-                Int32.TryParse(FMax.Text, out fmax);
-                imageProcessing.TresholdD(ref pixelData, fmin, fmax);
-            }
-            else if ("E" == method)
-            {
-                int gmin = 0;
-                Int32.TryParse(GMin.Text, out gmin);
-                int gmax = 255;
-                Int32.TryParse(GMax.Text, out gmax);
-                imageProcessing.TresholdE(ref pixelData, gmin, gmax);    
-            }
-            else if (method == "Filter")
-            {
-                int[,] pixels = ArrayConverter.To2D(pixelData, modifiedImage.PixelWidth, modifiedImage.PixelHeight);
-                //pixels = imageProcessing.ApplySmooth(pixels);
-                pixels = imageProcessing.MinFilter(pixels);
-                pixelData = ArrayConverter.ToLinear(pixels);
+                case "D":
+                    double gmin = 0;
+                    Double.TryParse(GMin.Text, out gmin);
+                    double gmax = 255;
+                    Double.TryParse(GMax.Text, out gmax);
+                    
+                    imageProcessing.TresholdD(ref pixelData, (int)gmin, (int)gmax);
+                    break;
+
+                case "E":
+                    
+                    double fmin = 0;
+                    double fmax = 255;
+                    Double.TryParse(FMin.Text, out fmin);
+                    Double.TryParse(FMax.Text, out fmax);
+                    
+                    imageProcessing.TresholdE(ref pixelData, (int)fmin, (int)fmax);
+                    break;
+
+                case "MIN":
+                    pixels = ArrayConverter.To2D(pixelData, modifiedImage.PixelWidth, modifiedImage.PixelHeight);
+                    pixels = imageProcessing.MinFilter(pixels);
+                    pixelData = ArrayConverter.ToLinear(pixels);
+                    break;
+
+                case "MAX":
+                    pixels = ArrayConverter.To2D(pixelData, modifiedImage.PixelWidth, modifiedImage.PixelHeight);
+                    pixels = imageProcessing.MaxFilter(pixels);
+                    pixelData = ArrayConverter.ToLinear(pixels);
+
+                    break;
+
+                case "MINMAX":
+                    pixels = ArrayConverter.To2D(pixelData, modifiedImage.PixelWidth, modifiedImage.PixelHeight);
+                    pixels = imageProcessing.MinMaxFilter(pixels);
+                    pixelData = ArrayConverter.ToLinear(pixels);
+
+                    break;
+                default:
+                    break;
             }
             // --------------------------------
 
             modifiedImage.WritePixels(new Int32Rect(0, 0, width, height), pixelData, widthInByte, 0);
-
             ModifiedImage.Source = modifiedImage;
+
+            DrawHistogram(pixelData, "MODIFIED");
         }
 
         private void TresholdD_OnClick(object sender, RoutedEventArgs e)
@@ -104,12 +135,47 @@ namespace Dsp.ImageProcessingDemo
             ModifyImage("E");
         }
 
-        private void FilterTest_OnClick(object sender, RoutedEventArgs e)
+        private void MinFilter_OnClick(object sender, RoutedEventArgs e)
         {
-            ModifyImage("Filter");
+            ModifyImage("MIN");
+        }
+
+        private void MaxFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            ModifyImage("MAX");
+        }
+
+        private void MinMaxFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            ModifyImage("MINMAX");
+        }
+
+
+        private void DrawHistogram(int[] values, string image)
+        {
+            int[] imageHistogram = imageProcessing.GetBrightnessHistogram(values);
+            PointCollection points = imageHistogram.ToPointCollection();
+            // T_T
+            if (image == "ORIGINAL")
+            {
+                OriginalImageHistogramPolygon.Points = points;
+            }
+            else
+            {
+                ModifiedImageHistogramPolygon.Points = points;
+            }
+        }
+
+        private void Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            //Slider slider = sender as Slider;
+            //if (slider != null)
+            //{
+            //    string param = slider.Tag as String;
+            //    ModifyImage(param);
+            //}
         }
     }
 }
-
 
  //«Ваша команда будет как-то участвовать в Олимпиаде?» Я и ответил: «Наша команда в полном составе придет и поддержит биатлонистов».

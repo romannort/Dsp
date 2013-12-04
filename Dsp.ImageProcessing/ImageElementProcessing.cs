@@ -1,18 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Dsp.ImageProcessing
 {
     public class ImageElementProcessing
     {
-        public void TresholdD(ref int[] pixelData, int fmin, int fmax)
+        public void TresholdE(ref int[] pixelData, int fmin, int fmax)
         {
             const int gmin = 0;
             const int gmax = 255;
             Treshold(ref pixelData, fmin, gmin, fmax, gmax);
         }
 
-        public void TresholdE(ref int[] pixelData, int gmin, int gmax)
+        public void TresholdD(ref int[] pixelData, int gmin, int gmax)
         {
             const int fmin = 0;
             const int fmax = 255;
@@ -159,5 +161,40 @@ namespace Dsp.ImageProcessing
             return Color.FromArgb((int)(r * 255), (int)(g * 255), (int)(b * 255));
         }
    
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public int[] GetBrightnessHistogram(int[] data)
+        {
+            int [] result = new int[256];
+            foreach (int brightness in data.Select(Color.FromArgb)
+                .Select(pixelColor => (int) Math.Floor(pixelColor.GetBrightness()*255)))
+            {
+                result[brightness]++;
+            }
+            return SmoothHistogram(result);
+        }
+
+
+        private static int[] SmoothHistogram(IList<int> originalValues)
+        {
+            int[] smoothedValues = new int[originalValues.Count];
+
+            double[] mask = new[] { 0.25, 0.5, 0.25 };
+
+            for (int bin = 1; bin < originalValues.Count - 1; bin++)
+            {
+                double smoothedValue = 0;
+                for (int i = 0; i < mask.Length; i++)
+                {
+                    smoothedValue += originalValues[bin - 1 + i] * mask[i];
+                }
+                smoothedValues[bin] = (int)smoothedValue;
+            }
+
+            return smoothedValues;
+        }
     }
 }

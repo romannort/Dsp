@@ -48,6 +48,7 @@
     <Compile Include="Extensions\ArrayConverter.cs" />
     <Compile Include="Extensions\BitmapConverters.cs" />
     <Compile Include="Extensions\ColorConverters.cs" />
+    <Compile Include="Extensions\PointConverter.cs" />
     <Compile Include="ImageElementProcessing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

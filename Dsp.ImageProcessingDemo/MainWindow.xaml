@@ -3,47 +3,83 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="clr-namespace:Dsp.ImageProcessingDemo"
         Title="MainWindow" Height="480" Width="640" MinHeight="480" MinWidth="640">
+
     <Grid Name="MainGrid">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="18"/>
-            <RowDefinition Height="18"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+        <!---->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,10,0,10" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Width="160" >
             <TextBox x:Name="FilePath" i:OpenFileDialogEx.Filter="Image Files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png" 
-                     Grid.Column="1" MinWidth="350" MinHeight="18" TextChanged="FilePath_OnTextChanged"/>
-            <Button Grid.Column="0" MinWidth="120" MinHeight="18">Open File</Button>
+        		 MinHeight="18" TextChanged="FilePath_OnTextChanged"/>
+            <Button MinWidth="120" MinHeight="18" Content="Open File"/>
+            
+            <Button x:Name="TresholdD" Content="Treshold D" Margin="10,10,10,0" ClickMode="Release" Click="TresholdD_OnClick" Visibility="Visible"/>
+
+        <GroupBox Name="TresholdDControls" Margin="0,5,0,5" Header="Treshold D">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="GMIN" />
+                    <TextBox x:Name="GMin" Text="{Binding ElementName=GMinSlider, Path=Value}" Width="30" Margin="5,0,0,0" IsReadOnly="True" />
+                    <Slider Minimum="0" Maximum="255" Value="20" x:Name="GMinSlider" Width="82" TickFrequency="1" Tag="D"
+                            ValueChanged="Slider_OnValueChanged" Interval="500"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="GMAX" />
+                    <TextBox x:Name="GMax" Width="30" Margin="5,0,0,0" IsReadOnly="True" Text="{Binding ElementName=GMaxSlider, Path=Value}"/>
+                    <Slider Minimum="0" Maximum="255" Value="100" x:Name="GMaxSlider" Width="76" TickFrequency="1" Tag="D"
+                            ValueChanged="Slider_OnValueChanged"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <Button x:Name="TresholdE" Content="Treshold E" Margin="10,10,10,0" ClickMode="Release" Click="TresholdE_OnClick" Visibility="Visible"/>
+        <GroupBox Margin="0,5,0,5" Padding="5" Header="Treshold E">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="FMIN" />
+                    <TextBox x:Name="FMin" Text="{Binding ElementName=FMinSlider, Path=Value}" Width="30" Margin="5,0,0,0" />
+                    <Slider Minimum="0" Maximum="255" Value="20" x:Name="FMinSlider" Width="74" TickFrequency="1" Tag="E"
+                            ValueChanged="Slider_OnValueChanged"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                    <TextBlock Text="FMAX" />
+                    <TextBox x:Name="FMax" Text="{Binding ElementName=FMaxSlider, Path=Value}" Width="30" Margin="5,0,0,0"/>
+                    <Slider Minimum="0" Maximum="255" Value="200" x:Name="FMaxSlider" Width="76" TickFrequency="1" Tag="E"
+                            ValueChanged="Slider_OnValueChanged"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <Button x:Name="MinFilter" Content="Min Filter" Margin="10,0,10,0" ClickMode="Release" Click="MinFilter_OnClick"/>
+        <Button x:Name="MaxFilter" Content="Max Filter" Margin="10,0,10,0" ClickMode="Release" Click="MaxFilter_OnClick"/>
+        <Button x:Name="MinMaxFilter" Content="Min-Max Filter" Margin="10,0,10,0" ClickMode="Release" Click="MinMaxFilter_OnClick"/>
         </StackPanel>
 
-        <StackPanel x:Name="TresholdParameters" Grid.Row="1" Orientation="Horizontal">
-            <TextBlock Text="FMIN" />
-            <TextBox x:Name="FMin" Text="10" Width="30" Margin="0,0,10,0"/>
-            <TextBlock Text="GMIN" />
-            <TextBox x:Name="GMin" Text="10" Width="30" Margin="0,0,10,0"/>
-            <TextBlock Text="FMAX" />
-            <TextBox x:Name="FMax" Text="150" Width="30" Margin="0,0,10,0"/>
-            <TextBlock Text="GMAX" />
-            <TextBox x:Name="GMax" Text="150" Width="30" Margin="0,0,10,0"/>
-            <Button x:Name="TresholdD" Content="Treshold D" Margin="10,0,10,0" ClickMode="Release" Click="TresholdD_OnClick"/>
-            <Button x:Name="TresholdE" Content="Treshold E" Margin="10,0,10,0" ClickMode="Release" Click="TresholdE_OnClick"/>
-            <Button x:Name="FilterTest" Content="Filter Test" Margin="10,0,10,0" ClickMode="Release" Click="FilterTest_OnClick"/>
-        </StackPanel>
-        
-        <Grid Row="2" Name="CanvasGrid">
+        <Grid Row="0" Name="CanvasGrid" Grid.Column="1" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            
             <Canvas Grid.Column="0" Background="Gray">
                 <Image x:Name="OriginalImage"/>
             </Canvas>
             <Canvas Grid.Column="1" Background="White">
                 <Image x:Name="ModifiedImage" Stretch="None"/>
             </Canvas>
+            
+            <Polygon x:Name="OriginalImageHistogramPolygon" Points="{Binding OriginalImageHistogram}" Grid.Row="1" Grid.Column="0"
+         Stretch="Fill" Fill="Black" Opacity="0.4" />
+            <Polygon x:Name="ModifiedImageHistogramPolygon"  Points="{Binding ModifiedImageHistogram}" Grid.Row="1" Grid.Column="1"
+         Stretch="Fill" Fill="Black" Opacity="0.4" />
         </Grid>
-
+        
     </Grid>
 </Window>
