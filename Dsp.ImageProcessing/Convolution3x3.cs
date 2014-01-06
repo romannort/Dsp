@@ -33,7 +33,7 @@ namespace Dsp.ImageProcessing
                     A = pixelColor[1, 1].A;
 
                     R = OperateColor(pixelColor, m, "R");
-
+                    
                     G = OperateColor(pixelColor, m, "G");
 
                     B = OperateColor(pixelColor, m, "B");
@@ -85,49 +85,55 @@ namespace Dsp.ImageProcessing
 
         private static int MinMaxColor(Color[,] pixelColor, string colorName, string minmax)
         {
-            int[] linearArray = new int[pixelColor.GetLength(0) * pixelColor.GetLength(1)];
-
-            int index = 0;
+            int minValue = pixelColor[0, 0].ColorByName(colorName);
+            int maxValue = minValue;
             for (int i = 0; i < pixelColor.GetLength(0); ++i)
             {
                 for (int j = 0; j < pixelColor.GetLength(1); ++j)
                 {
-                    linearArray[index++] = pixelColor[i, j].ColorByName(colorName);
+                    int nextColor = pixelColor[i, j].ColorByName(colorName);
+                    if (nextColor < minValue) minValue = nextColor;
+                    if (nextColor > maxValue) maxValue = nextColor;
                 }
             }
             
             if (minmax == "MIN")
             {
-                return linearArray.Min();
+                return minValue;
             }
             if (minmax == "MAX")
             {
-                return linearArray.Max();
+                return maxValue;
             }
             return 0;
         }
 
         private static int OperateColor(Color[,] pixelColor, ConvolutionMatrix m, string colorName)
         {
-             var result = (int)((((pixelColor[0, 0].ColorByName(colorName) * m.Matrix[0, 0]) +
-                                 (pixelColor[1, 0].ColorByName(colorName) * m.Matrix[1, 0]) +
-                                 (pixelColor[2, 0].ColorByName(colorName) * m.Matrix[2, 0]) +
-                                 (pixelColor[0, 1].ColorByName(colorName) * m.Matrix[0, 1]) +
-                                 (pixelColor[1, 1].ColorByName(colorName) * m.Matrix[1, 1]) +
-                                 (pixelColor[2, 1].ColorByName(colorName) * m.Matrix[2, 1]) +
-                                 (pixelColor[0, 2].ColorByName(colorName) * m.Matrix[0, 2]) +
-                                 (pixelColor[1, 2].ColorByName(colorName) * m.Matrix[1, 2]) +
-                                 (pixelColor[2, 2].ColorByName(colorName) * m.Matrix[2, 2]))
-                                        / m.Factor) + m.Offset);
+            int result;
+            int rows = 3;
+            int cols = 3;
+            double rawResult = 0;
+            for (int i = 0; i < rows; ++i)
+            {
+                for (int j = 0; j < cols; ++j)
+                {
+                    rawResult += (pixelColor[i, j].ColorByName(colorName) * m.Matrix[i, j]);
+                }
+            }
 
-             if (result < 0)
-             {
-                 result = 0;
-             }
-             else if (result > 255)
-             {
-                 result = 255;
-             }
+            rawResult /= m.Factor;
+            rawResult += m.Offset;
+
+            result = (int)rawResult;
+            if (result < 0)
+            {
+                result = 0;
+            }
+            else if (result > 255)
+            {
+                result = 255;
+            }
 
             return result;
         }
