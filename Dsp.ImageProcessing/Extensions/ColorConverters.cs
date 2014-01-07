@@ -2,24 +2,27 @@
 
 namespace Dsp.ImageProcessing.Extensions
 {
-    public static class ColorConverters
+    /// <summary>
+    /// 
+    /// </summary>
+    internal static class ColorConverters
     {
-
-        static string Red = "R";
-        static string Green = "G";
-        static string Blue = "B";
-
-        public static int ColorByName(this Color src, string propName)
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        internal static int ColorChannelByCode(this Color src, ColorCode code)
         {
-            //byte result = (byte)(src.GetType()
-            //    .GetProperty(propName)
-            //    .GetValue(src, null));
-
-            if (propName == Red) return src.R;
-            if (propName == Green) return src.G;
-            return src.B;
-            
-            //return result;
+            switch (code)
+            {
+                case ColorCode.R: return src.R;
+                case ColorCode.G: return src.G;
+                case ColorCode.B: return src.B;
+                default: throw new System.ArgumentException("Invalid color code.");
+            }
         }       
     }
 }

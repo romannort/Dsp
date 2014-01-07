@@ -2,7 +2,7 @@
 using System.Linq;
 using Dsp.ImageProcessing.Extensions;
 
-namespace Dsp.ImageProcessing
+namespace Dsp.ImageProcessing.Filters
 {
     public static class Convolution3x3
     {
@@ -32,11 +32,11 @@ namespace Dsp.ImageProcessing
 
                     A = pixelColor[1, 1].A;
 
-                    R = OperateColor(pixelColor, m, "R");
+                    R = OperateColor(pixelColor, m, ColorCode.R);
                     
-                    G = OperateColor(pixelColor, m, "G");
+                    G = OperateColor(pixelColor, m, ColorCode.G);
 
-                    B = OperateColor(pixelColor, m, "B");
+                    B = OperateColor(pixelColor, m, ColorCode.B);
 
                     
                     clonedPixels[x + 1, y + 1] = Color.FromArgb(A, R, G, B).ToArgb();
@@ -44,7 +44,6 @@ namespace Dsp.ImageProcessing
             }
             return clonedPixels;
         }
-
 
         public static int[,] MinMaxFilter(int[,] pixels, string minmax)
         {
@@ -71,11 +70,11 @@ namespace Dsp.ImageProcessing
 
                     int A = pixelColor[1, 1].A;
 
-                    int R = MinMaxColor(pixelColor, "R", minmax);
+                    int R = MinMaxColor(pixelColor, ColorCode.R, minmax);
 
-                    int G = MinMaxColor(pixelColor, "G", minmax);
+                    int G = MinMaxColor(pixelColor, ColorCode.G, minmax);
 
-                    int B = MinMaxColor(pixelColor, "B", minmax);
+                    int B = MinMaxColor(pixelColor, ColorCode.B, minmax);
 
                     clonedPixels[x + 1, y + 1] = Color.FromArgb(A, R, G, B).ToArgb();
                 }
@@ -83,15 +82,15 @@ namespace Dsp.ImageProcessing
             return clonedPixels;
         }
 
-        private static int MinMaxColor(Color[,] pixelColor, string colorName, string minmax)
+        private static int MinMaxColor(Color[,] pixelColor, ColorCode color, string minmax)
         {
-            int minValue = pixelColor[0, 0].ColorByName(colorName);
+            int minValue = pixelColor[0, 0].ColorChannelByCode(color);
             int maxValue = minValue;
             for (int i = 0; i < pixelColor.GetLength(0); ++i)
             {
                 for (int j = 0; j < pixelColor.GetLength(1); ++j)
                 {
-                    int nextColor = pixelColor[i, j].ColorByName(colorName);
+                    int nextColor = pixelColor[i, j].ColorChannelByCode(color);
                     if (nextColor < minValue) minValue = nextColor;
                     if (nextColor > maxValue) maxValue = nextColor;
                 }
@@ -108,7 +107,7 @@ namespace Dsp.ImageProcessing
             return 0;
         }
 
-        private static int OperateColor(Color[,] pixelColor, ConvolutionMatrix m, string colorName)
+        private static int OperateColor(Color[,] pixelColor, ConvolutionMatrix m, ColorCode code)
         {
             int result;
             int rows = 3;
@@ -118,7 +117,7 @@ namespace Dsp.ImageProcessing
             {
                 for (int j = 0; j < cols; ++j)
                 {
-                    rawResult += (pixelColor[i, j].ColorByName(colorName) * m.Matrix[i, j]);
+                    rawResult += (pixelColor[i, j].ColorChannelByCode(code) * m.Matrix[i, j]);
                 }
             }
 
