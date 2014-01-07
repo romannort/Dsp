@@ -45,11 +45,12 @@
   <ItemGroup>
     <Compile Include="ColorCode.cs" />
     <Compile Include="Filters\Convolution3x3.cs" />
-    <Compile Include="ConvolutionMatrix.cs" />
+    <Compile Include="Filters\ConvolutionMatrix.cs" />
     <Compile Include="Extensions\ArrayConverter.cs" />
     <Compile Include="Extensions\BitmapConverters.cs" />
     <Compile Include="Extensions\ColorConverters.cs" />
     <Compile Include="Extensions\PointConverter.cs" />
+    <Compile Include="Filters\FilterBase.cs" />
     <Compile Include="ImageElementProcessing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
