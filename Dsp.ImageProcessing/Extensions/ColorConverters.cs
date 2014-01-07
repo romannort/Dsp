@@ -27,7 +27,7 @@ namespace Dsp.ImageProcessing.Extensions
         }
 
 
-        internal static Color ColorFromHsb(this Color src, float hue, float saturation, float brightness)
+        internal static Color ColorFromHsb(float hue, float saturation, float brightness)
         {
             double r, g, b;
             if (saturation == 0)
@@ -84,12 +84,11 @@ namespace Dsp.ImageProcessing.Extensions
                 g += M;
                 b += M;
             }
-            src = Color.FromArgb(
+            return  Color.FromArgb(
                 (int)(r * 255), 
                 (int)(g * 255), 
                 (int)(b * 255));
             
-            return src;
         }
     }
 }

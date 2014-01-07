@@ -45,7 +45,7 @@ namespace Dsp.ImageProcessing
                 if (result > 1) result = 1f;
                 if (result < 0) result = 0f;
                 // --------
-                color.ColorFromHsb(hue, saturation, result);
+                color = ColorConverters.ColorFromHsb(hue, saturation, result);
 
                 pixelData[i] = color.ToArgb();
             }

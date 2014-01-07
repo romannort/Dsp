@@ -4,7 +4,7 @@ using Dsp.ImageProcessing.Extensions;
 
 namespace Dsp.ImageProcessing.Filters
 {
-    public class ConvolutionFilter: FilterBase
+    internal class ConvolutionFilter: FilterBase
     {
 
         /// <summary>

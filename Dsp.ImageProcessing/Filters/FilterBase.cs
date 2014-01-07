@@ -12,6 +12,11 @@ namespace Dsp.ImageProcessing.Filters
     {
         internal ConvolutionMatrix Matrix { get; set; }
 
+        public FilterBase()
+        {
+
+        }
+
         public FilterBase(ConvolutionMatrix matrix)
         {
             Matrix = matrix;
@@ -34,6 +39,7 @@ namespace Dsp.ImageProcessing.Filters
             {
                 for (int y = 0; y < width - borderOffset; y++) // reversed sides
                 {
+                    
                     FillPixelColorsMatrix(pixels, x, y, ref pixelColor);
             
                     A = pixelColor[1, 1].A;
@@ -68,6 +74,9 @@ namespace Dsp.ImageProcessing.Filters
         /// <param name="matrix"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        protected virtual int OperateColor(Color[,] pixelColors, ConvolutionMatrix matrix, ColorCode code);
+        protected virtual int OperateColor(Color[,] pixelColors, ConvolutionMatrix matrix, ColorCode code)
+        {
+            return 0;
+        }
     }
 }
