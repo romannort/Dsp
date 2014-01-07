@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Dsp.ImageProcessing.Filters;
+using Filters = Dsp.ImageProcessing.Filters;
 using Dsp.ImageProcessing.Extensions;
 
 namespace Dsp.ImageProcessing
@@ -57,36 +58,47 @@ namespace Dsp.ImageProcessing
             matrix.SetAll(1);
             matrix.Matrix[1, 1] = weight;
             matrix.Factor = weight + 8;
-            int[,] result = Convolution3x3.Convolution(pixels, matrix);
+
+            FilterBase filter = new ConvolutionFilter() { Matrix = matrix };
+            int[,] result = filter.Execute(pixels);
 
             return result;
         }
 
         public int[,] MinFilter(int[,] pixels)
         {
-            int[,] result = Convolution3x3.MinMaxFilter(pixels, "MIN");
+            int size = 3;
+            FilterBase filter = new MinMaxFilter(Filters.MinMaxFilter.Mode.Min, size);
+            int[,] result = filter.Execute(pixels);
 
             return result;
         }
 
         public int[,] MaxFilter(int[,] pixels)
         {
-            int[,] result = Convolution3x3.MinMaxFilter(pixels, "MAX");
+            int size = 3;
+            FilterBase filter = new MinMaxFilter(Filters.MinMaxFilter.Mode.Max, size);
+            int[,] result = filter.Execute(pixels);
 
             return result;
         }
 
         public int[,] MinMaxFilter(int[,] pixels)
         {
-            int[,] result = Convolution3x3.MinMaxFilter(pixels, "MIN");
-            result = Convolution3x3.MinMaxFilter(result, "MAX");
+            int size = 3;
+            FilterBase filterMin = new MinMaxFilter(Filters.MinMaxFilter.Mode.Min, size);
+            FilterBase filterMax = new MinMaxFilter(Filters.MinMaxFilter.Mode.Max, size);
+            // Chains ??
+            int[,] result = filterMax.Execute(filterMin.Execute(pixels));
 
             return result;
         }
 
         public int[,] Filter(int[,] pixels, ConvolutionMatrix matrix)
         {
-            int[,] result = Convolution3x3.Convolution(pixels, matrix);
+            FilterBase filter = new ConvolutionFilter() { Matrix = matrix };
+            int[,] result = filter.Execute(pixels);
+
             return result;
         }
         

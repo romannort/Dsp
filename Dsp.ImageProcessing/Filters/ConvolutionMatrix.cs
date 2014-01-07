@@ -6,7 +6,12 @@
     public class ConvolutionMatrix
     {
 
-        private double[,] Matrix;
+        public double[,] Matrix;
+
+        /// <summary>
+        /// Matrix size.
+        /// </summary>
+        public int Size { get { return matrixSize; } }
 
         /// <summary>
         /// 
