@@ -160,7 +160,8 @@ namespace Dsp.ImageProcessingDemo
 
         private void DrawHistogram(int[] values, string image)
         {
-            int[] imageHistogram = imageProcessing.GetBrightnessHistogram(values);
+            HistogramDataBuilder builder = new HistogramDataBuilder() { Smooth = true };
+            int[] imageHistogram = builder.GetBrightnessHistogram(values);
             PointCollection points = imageHistogram.ToPointCollection();
             // T_T
             if (image == "ORIGINAL")

@@ -56,6 +56,7 @@
     <Compile Include="Filters\FilterBase.cs" />
     <Compile Include="Filters\Math\MatrixMultiplication.cs" />
     <Compile Include="Filters\MinFilter.cs" />
+    <Compile Include="HistogramDataBuilder.cs" />
     <Compile Include="ImageElementProcessing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -6,6 +6,9 @@ namespace Dsp.ImageProcessing.Extensions
 {
     public static class PointConverter
     {
+        /// <summary> Converts array of numbers to <see cref="PointCollection"/>.</summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public static PointCollection ToPointCollection(this int[] values)
         {
             int max = values.Max();
