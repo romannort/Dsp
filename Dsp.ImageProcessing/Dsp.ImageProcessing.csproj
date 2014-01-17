@@ -53,6 +53,7 @@
     <Compile Include="Extensions\ColorConverters.cs" />
     <Compile Include="Extensions\PointConverter.cs" />
     <Compile Include="Filters\FilterBase.cs" />
+    <Compile Include="Filters\Math\MatrixMultiplication.cs" />
     <Compile Include="Filters\MinFilter.cs" />
     <Compile Include="ImageElementProcessing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
