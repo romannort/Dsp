@@ -18,9 +18,9 @@ namespace Dsp.ImageProcessing.Filters
                 {
                     int color = pixelColors[i, j];
                     double coeff = matrix.Matrix[i, j];
-                    rawRed += (int)(color.GetChannel(ChannelsExtension.RED) * coeff);
-                    rawGreen += (int)(color.GetChannel(ChannelsExtension.GREEN) * coeff);
-                    rawBlue += (int)(color.GetChannel(ChannelsExtension.BLUE) * coeff);
+                    rawRed += (int)(color.GetChannel(ChannelsFromARGBExtension.RED) * coeff);
+                    rawGreen += (int)(color.GetChannel(ChannelsFromARGBExtension.GREEN) * coeff);
+                    rawBlue += (int)(color.GetChannel(ChannelsFromARGBExtension.BLUE) * coeff);
                 }
             }
 
@@ -28,7 +28,7 @@ namespace Dsp.ImageProcessing.Filters
             rawGreen = CorrectResult(rawGreen, Matrix.Factor, Matrix.Offset);
             rawBlue = CorrectResult(rawBlue, Matrix.Factor, Matrix.Offset);
 
-            int result = (0xff << 24) | (rawRed << 16) | (rawGreen << 8) | rawBlue;
+            int result = BuildColorFromChannels(rawRed, rawGreen, rawBlue);
        
             return result;
         }
@@ -39,20 +39,20 @@ namespace Dsp.ImageProcessing.Filters
             return result;
         }
 
-    }
-
-    /// <summary></summary>
-    public static class ChannelsExtension
-    {
-        public static short RED = 16;
-
-        public static short GREEN = 8;
-
-        public static short BLUE = 0;
-
-        public static int GetChannel(this int color, short offset)
+        private static int BuildColorFromChannels(int red, int green, int blue)
         {
-            return (color >> offset) & 0xFF;
+            const short alpha = 0xFF;
+            const short alphaOffset = 24;
+            const short redOffset = 16;
+            const short greenOffset = 8;
+            const short blueOffset = 0;
+
+            int result =    (alpha << alphaOffset)  | 
+                            (red << redOffset)      | 
+                            (green << greenOffset)  | 
+                            (blue << blueOffset);
+            return result;
         }
-    }
+
+    }   
 }

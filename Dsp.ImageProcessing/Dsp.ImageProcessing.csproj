@@ -45,7 +45,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColorCode.cs" />
+    <Compile Include="ChannelMasks.cs" />
+    <Compile Include="Extensions\ChannelsFromARGBExtension.cs" />
     <Compile Include="Filters\ConvolutionFilter.cs" />
     <Compile Include="Filters\ConvolutionMatrix.cs" />
     <Compile Include="Extensions\ArrayConverter.cs" />

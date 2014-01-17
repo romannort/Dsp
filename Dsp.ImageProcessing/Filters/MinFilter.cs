@@ -39,9 +39,10 @@ namespace Dsp.ImageProcessing.Filters
 
         private int MinMaxColor(int[,] pixelColor)
         {
-            int minRed = pixelColor[0, 0] & 0x00ff0000;
-            int minGreen = pixelColor[0, 0] & 0x0000ff00;
-            int minBlue = pixelColor[0, 0] & 0x000000ff;
+            int initialColor = pixelColor[0, 0];
+            int minRed = initialColor & ChannelMasks.Red;
+            int minGreen = initialColor & ChannelMasks.Green;
+            int minBlue = initialColor & ChannelMasks.Blue;
 
             int maxRed = minRed;
             int maxGreen = minGreen;
@@ -52,9 +53,9 @@ namespace Dsp.ImageProcessing.Filters
                 for (int j = 0; j < pixelColor.GetLength(1); ++j)
                 {
                     int nextColor = pixelColor[i, j];
-                    int nextRed = nextColor & 0x00FF0000;
-                    int nextGreen = nextColor & 0x0000FF00;
-                    int nextBlue = nextColor & 0x000000FF;
+                    int nextRed = nextColor & ChannelMasks.Red;
+                    int nextGreen = nextColor & ChannelMasks.Green;
+                    int nextBlue = nextColor & ChannelMasks.Blue;
                     
                     if (this.mode == Mode.Min)
                     {
@@ -71,14 +72,24 @@ namespace Dsp.ImageProcessing.Filters
                 }
             }
 
+            uint result;
             if (this.mode == Mode.Min)
             {
-                uint minValue = 0xFF000000 | (uint)minRed | (uint)minGreen | (uint)minBlue;
-                return (int)minValue;
+                result = BuildColorFromMaskedChannels(minRed, minGreen, minBlue);
             }
-            uint maxValue = 0xFF000000 | (uint)(maxRed) | (uint)(maxGreen) | (uint)maxBlue;
-            return (int)maxValue;
+            else
+            {
+                result = BuildColorFromMaskedChannels(maxRed, maxGreen, maxBlue);
+            }
+
+            return (int)result;
         }
 
+        private static uint BuildColorFromMaskedChannels(int red, int blue, int green)
+        {
+            const uint alpha = 0xFF000000;
+            uint result = alpha | (uint)red | (uint)green | (uint)blue;
+            return result;
+        }
     }
 }
