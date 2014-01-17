@@ -25,10 +25,7 @@ namespace Dsp.ImageProcessing.Filters
         public virtual int[,] Execute(int[,] pixels)
         {
             int[,] clonedPixels = (int[,])pixels.Clone();
-
-            Color[,] pixelColor = new Color[Matrix.Size, Matrix.Size];
-            int A, R, G, B;
-
+           
             int width = pixels.GetLength(1);
             int height = pixels.GetLength(0);
 
@@ -39,44 +36,35 @@ namespace Dsp.ImageProcessing.Filters
             {
                 for (int y = 0; y < width - borderOffset; y++) // reversed sides
                 {
-                    
-                    FillPixelColorsMatrix(pixels, x, y, ref pixelColor);
-            
-                    A = pixelColor[1, 1].A;
-                    R = OperateColor(pixelColor, Matrix, ColorCode.R);
-                    G = OperateColor(pixelColor, Matrix, ColorCode.G);
-                    B = OperateColor(pixelColor, Matrix, ColorCode.B);
-
-                    clonedPixels[x + filterOuputOffset, y + filterOuputOffset] = 
-                        Color.FromArgb(A, R, G, B).ToArgb();
+                    int result = OperateColors(GetSourceMatrix(pixels, x, y), Matrix);
+                    clonedPixels[x + filterOuputOffset, y + filterOuputOffset] = result;
                 }
             }
 
             return clonedPixels;
         }
 
-
-        private void FillPixelColorsMatrix(int[,] pixels, int x, int y, ref Color[,] pixelColors)
+        private int[,] GetSourceMatrix(int[,] pixels, int x, int y)
         {
+            int[,] result = new int[Matrix.Size, Matrix.Size];
+
             for (int i = 0; i < Matrix.Size; ++i)
             {
                 for (int j = 0; j < Matrix.Size; ++j)
                 {
-                    pixelColors[i, j] = Color.FromArgb(pixels[x + i, y + j]);
+                    result[i, j] = pixels[x + i, y + j];
                 }
             }
+
+            return result;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="pixelColors"></param>
+        /// <param name="pixelColor"></param>
         /// <param name="matrix"></param>
-        /// <param name="code"></param>
         /// <returns></returns>
-        protected virtual int OperateColor(Color[,] pixelColors, ConvolutionMatrix matrix, ColorCode code)
-        {
-            return 0;
-        }
+        protected abstract int OperateColors(int[,] pixelColor, ConvolutionMatrix matrix);
     }
 }

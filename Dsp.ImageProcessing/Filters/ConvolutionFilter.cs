@@ -4,40 +4,55 @@ using Dsp.ImageProcessing.Extensions;
 
 namespace Dsp.ImageProcessing.Filters
 {
-    internal class ConvolutionFilter: FilterBase
+    internal class ConvolutionFilter : FilterBase
     {
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pixelColor"></param>
-        /// <param name="matrix"></param>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        protected virtual int OperateColor(Color[,] pixelColor, ConvolutionMatrix matrix, ColorCode code)
+        protected override int OperateColors(int[,] pixelColors, ConvolutionMatrix matrix)
         {
-            double rawResult = 0;
+            int rawRed = 0;
+            int rawGreen = 0;
+            int rawBlue = 0;
 
             for (int i = 0; i < matrix.Size; ++i)
             {
                 for (int j = 0; j < matrix.Size; ++j)
                 {
-                    rawResult += (pixelColor[i, j].ColorChannelByCode(code) * matrix.Matrix[i, j]);
+                    int color = pixelColors[i, j];
+                    double coeff = matrix.Matrix[i, j];
+                    rawRed += (int)(color.GetChannel(ChannelsExtension.RED) * coeff);
+                    rawGreen += (int)(color.GetChannel(ChannelsExtension.GREEN) * coeff);
+                    rawBlue += (int)(color.GetChannel(ChannelsExtension.BLUE) * coeff);
                 }
             }
 
-            int result = (int)(rawResult / matrix.Factor + matrix.Offset);
-            if (result < 0)
-            {
-                result = 0;
-            }
-            else if (result > 255)
-            {
-                result = 255;
-            }
+            rawRed = CorrectResult(rawRed, Matrix.Factor, Matrix.Offset);
+            rawGreen = CorrectResult(rawGreen, Matrix.Factor, Matrix.Offset);
+            rawBlue = CorrectResult(rawBlue, Matrix.Factor, Matrix.Offset);
 
+            int result = (0xff << 24) | (rawRed << 16) | (rawGreen << 8) | rawBlue;
+       
             return result;
         }
+
+        private byte CorrectResult(int rawResult, double factor, double offset)
+        {
+            byte result = (byte)(rawResult / factor + offset);
+            return result;
+        }
+
     }
 
+    /// <summary></summary>
+    public static class ChannelsExtension
+    {
+        public static short RED = 16;
+
+        public static short GREEN = 8;
+
+        public static short BLUE = 0;
+
+        public static int GetChannel(this int color, short offset)
+        {
+            return (color >> offset) & 0xFF;
+        }
+    }
 }
