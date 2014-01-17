@@ -12,7 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <!---->
+        
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,10,0,10" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Width="160" >
             <TextBox x:Name="FilePath" i:OpenFileDialogEx.Filter="Image Files (*.bmp, *.jpg, *.png)|*.bmp;*.jpg;*.png" 
         		 MinHeight="18" TextChanged="FilePath_OnTextChanged"/>
@@ -56,6 +56,7 @@
         <Button x:Name="MinFilter" Content="Min Filter" Margin="10,0,10,0" ClickMode="Release" Click="MinFilter_OnClick"/>
         <Button x:Name="MaxFilter" Content="Max Filter" Margin="10,0,10,0" ClickMode="Release" Click="MaxFilter_OnClick"/>
         <Button x:Name="MinMaxFilter" Content="Min-Max Filter" Margin="10,0,10,0" ClickMode="Release" Click="MinMaxFilter_OnClick"/>
+        <Button x:Name="BlurFilter" Content="Blur Filter" Margin="10,0,10,0" ClickMode="Release" Click="BlurFilter_OnClick"/>
         </StackPanel>
 
         <Grid Row="0" Name="CanvasGrid" Grid.Column="1" >
@@ -64,16 +65,12 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition />
+                <RowDefinition Height=".8*"/>
+                <RowDefinition Height="200"/>
             </Grid.RowDefinitions>
             
-            <Canvas Grid.Column="0" Background="Gray">
-                <Image x:Name="OriginalImage"/>
-            </Canvas>
-            <Canvas Grid.Column="1" Background="White">
-                <Image x:Name="ModifiedImage" Stretch="None"/>
-            </Canvas>
+        <Image x:Name="OriginalImage" Stretch="Uniform" Grid.Column="0"/>
+        <Image x:Name="ModifiedImage" Stretch="Uniform" Grid.Column="1"/>
             
             <Polygon x:Name="OriginalImageHistogramPolygon" Points="{Binding OriginalImageHistogram}" Grid.Row="1" Grid.Column="0"
          Stretch="Fill" Fill="Black" Opacity="0.4" />
