@@ -12,8 +12,8 @@ namespace Dsp.ImageProcessing
 
         internal static int Red = 0x00FF0000;
         
-        internal static int Green = 0x00FF0000;
+        internal static int Green = 0x0000FF00;
 
-        internal static int Blue = 0x00FF0000;
+        internal static int Blue = 0x000000FF;
     }
 }

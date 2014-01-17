@@ -85,7 +85,7 @@ namespace Dsp.ImageProcessing.Filters
             return (int)result;
         }
 
-        private static uint BuildColorFromMaskedChannels(int red, int blue, int green)
+        private static uint BuildColorFromMaskedChannels(int red, int green, int blue)
         {
             const uint alpha = 0xFF000000;
             uint result = alpha | (uint)red | (uint)green | (uint)blue;
