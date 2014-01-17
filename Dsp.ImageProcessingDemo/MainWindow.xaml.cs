@@ -114,6 +114,13 @@ namespace Dsp.ImageProcessingDemo
                     pixelData = ArrayConverter.ToLinear(pixels);
 
                     break;
+
+                case "BLUR":
+                    pixels = ArrayConverter.To2D(pixelData, modifiedImage.PixelWidth, modifiedImage.PixelHeight);
+                    pixels = imageProcessing.Blur(pixels);
+                    pixelData = ArrayConverter.ToLinear(pixels);
+                    break;
+
                 default:
                     break;
             }
@@ -166,6 +173,11 @@ namespace Dsp.ImageProcessingDemo
             }
         }
 
+        private void BlurFilter_OnClick(object sender, RoutedEventArgs e)
+        {
+            ModifyImage("BLUR");
+        }
+
         private void Slider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             //Slider slider = sender as Slider;
@@ -177,5 +189,3 @@ namespace Dsp.ImageProcessingDemo
         }
     }
 }
-
- //«Ваша команда будет как-то участвовать в Олимпиаде?» Я и ответил: «Наша команда в полном составе придет и поддержит биатлонистов».

@@ -108,15 +108,29 @@ namespace Dsp.ImageProcessing
             for (int i = 0; i < pixelData.Length; i++)
             {
                 pixelData[i] ^= 0x00ffffff;
-                // ---------------A|R|G|B|  ?? BGRA??
+                // ---------------A|R|G|B|
             }        
         }
 
-        
+
+        public int[,] Blur(int[,] pixels)
+        {
+            ConvolutionMatrix matrix = new ConvolutionMatrix(3);
+            matrix.SetAll(2);
+            matrix.Factor = 16;
+            matrix.Offset = 0;
+            
+            matrix.Matrix[0, 0] = 1;
+            matrix.Matrix[0, 2] = 1;
+            matrix.Matrix[1, 1] = 4;
+            matrix.Matrix[2, 0] = 1;
+            matrix.Matrix[2, 2] = 1;
+
+            return Filter(pixels, matrix);
+        }
+
    
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <summary> </summary>
         /// <param name="data"></param>
         /// <returns></returns>
         public int[] GetBrightnessHistogram(int[] data)
